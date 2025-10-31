@@ -18,15 +18,13 @@ if (typeof window === "undefined") {
     let serviceAccount: any = undefined
 
     if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-      // Hỗ trợ cả định dạng một dòng với \n, hoặc JSON có xuống dòng thật
+      const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY.replace(/^['"]|['"]$/g, "")
       try {
-        serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-      } catch {
-        // Nếu bị bọc nháy hoặc escape lạ, thử làm sạch chuỗi rồi parse lại
-        const raw = (process.env.FIREBASE_SERVICE_ACCOUNT_KEY || "")
-          .replace(/^['"]|['"]$/g, "")
-          .replace(/\\n/g, "\\n")
         serviceAccount = JSON.parse(raw)
+      } catch {
+        // Nếu không phải JSON thuần, thử chuyển các chuỗi escape rồi parse lại
+        const cleaned = raw.replace(/\\n/g, "\n")
+        serviceAccount = JSON.parse(cleaned)
       }
     } else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
       const path = resolve(process.cwd(), process.env.FIREBASE_SERVICE_ACCOUNT_PATH)
