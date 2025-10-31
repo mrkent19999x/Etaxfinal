@@ -16,12 +16,26 @@ let adminBucket: Bucket | undefined
 if (typeof window === "undefined") {
   if (getApps().length === 0) {
     let serviceAccount: any = undefined
-    
+
     if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+      // Hỗ trợ cả định dạng một dòng với \n, hoặc JSON có xuống dòng thật
+      try {
+        serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+      } catch {
+        // Nếu bị bọc nháy hoặc escape lạ, thử làm sạch chuỗi rồi parse lại
+        const raw = (process.env.FIREBASE_SERVICE_ACCOUNT_KEY || "")
+          .replace(/^['"]|['"]$/g, "")
+          .replace(/\\n/g, "\\n")
+        serviceAccount = JSON.parse(raw)
+      }
     } else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
       const path = resolve(process.cwd(), process.env.FIREBASE_SERVICE_ACCOUNT_PATH)
       serviceAccount = JSON.parse(readFileSync(path, "utf8"))
+    }
+
+    if (serviceAccount && typeof serviceAccount.private_key === "string") {
+      // Chuẩn hóa \n thành xuống dòng thật để firebase-admin parse DER chính xác
+      serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n")
     }
 
     if (!serviceAccount) {
