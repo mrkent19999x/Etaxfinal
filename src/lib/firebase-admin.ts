@@ -17,12 +17,18 @@ if (typeof window === "undefined") {
   if (getApps().length === 0) {
     let serviceAccount: any = undefined
 
-    if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+    if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
+      try {
+        const decoded = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, "base64").toString("utf8")
+        serviceAccount = JSON.parse(decoded)
+      } catch (error) {
+        console.error("[Firebase Admin] Failed to decode FIREBASE_SERVICE_ACCOUNT_BASE64", error)
+      }
+    } else if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
       const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY.replace(/^['"]|['"]$/g, "")
       try {
         serviceAccount = JSON.parse(raw)
       } catch {
-        // Nếu không phải JSON thuần, thử chuyển các chuỗi escape rồi parse lại
         const cleaned = raw.replace(/\\n/g, "\n")
         serviceAccount = JSON.parse(cleaned)
       }
