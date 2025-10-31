@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { adminAuth } from "./lib/firebase-admin"
 
 const PUBLIC_PATHS = [
   "/login",
