@@ -14,6 +14,8 @@ export default function EtaxMobileHome() {
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const session = useUserSession()
+  const [frequentTitle, setFrequentTitle] = useState("Chức năng hay dùng")
+  const [servicesTitle, setServicesTitle] = useState("Danh sách nhóm dịch vụ")
   useBodyLock(true)
 
   useEffect(() => {
@@ -112,7 +114,7 @@ export default function EtaxMobileHome() {
           {/* Frequently Used Features */}
           <section className="mx-4 mt-2 bg-white rounded-2xl p-5 shadow-sm" aria-labelledby="frequent-features-heading">
             <div className="mb-4">
-              <h2 id="frequent-features-heading" className="text-lg font-bold text-gray-800">Chức năng hay dùng</h2>
+              <h2 id="frequent-features-heading" className="text-lg font-bold text-gray-800">{frequentTitle}</h2>
             </div>
 
             {/* Horizontal Scroll */}
@@ -147,7 +149,7 @@ export default function EtaxMobileHome() {
           <section className="mx-4 mt-2 bg-white rounded-2xl p-5 shadow-sm mb-6" style={{ 
             marginBottom: "calc(24px + env(safe-area-inset-bottom, 0px))"
           }} aria-labelledby="services-heading">
-            <h2 id="services-heading" className="text-lg font-bold text-gray-800 mb-6">Danh sách nhóm dịch vụ</h2>
+            <h2 id="services-heading" className="mb-6 text-lg font-bold text-gray-800">{servicesTitle}</h2>
 
             <nav className="grid grid-cols-3 gap-6" aria-label="Danh sách dịch vụ">
               {services.map((service) => (
@@ -179,3 +181,37 @@ export default function EtaxMobileHome() {
     </div>
   )
 }
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch("/api/content-blocks/home.frequentFeatures")
+        if (res.ok) {
+          const data = await res.json()
+          if (!cancelled && data.content) {
+            if (data.content.title) setFrequentTitle(data.content.title)
+          }
+        }
+      } catch (error) {
+        console.warn("Không thể tải content block home.frequentFeatures", error)
+      }
+    })()
+
+    ;(async () => {
+      try {
+        const res = await fetch("/api/content-blocks/home.services")
+        if (res.ok) {
+          const data = await res.json()
+          if (!cancelled && data.content?.title) {
+            setServicesTitle(data.content.title)
+          }
+        }
+      } catch (error) {
+        console.warn("Không thể tải content block home.services", error)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])

@@ -32,8 +32,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { href: "/admin", label: "Dashboard", icon: FileText },
     { href: "/admin/users", label: "Quản lý Users", icon: Users },
     { href: "/admin/templates", label: "Templates", icon: FileText },
-    { href: "/admin/mappings", label: "Mapping Field", icon: MapPin },
-    { href: "/admin/transactions", label: "Transactions", icon: Receipt },
+    { href: "/admin/documents/create", label: "Tạo chứng từ", icon: Receipt },
+    { href: "/admin/content", label: "Content Blocks", icon: FileText },
+    { href: "/admin/field-definitions", label: "Field Definitions", icon: MapPin },
   ]
 
   return (
