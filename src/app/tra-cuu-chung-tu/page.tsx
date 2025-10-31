@@ -68,21 +68,21 @@ export default function TraCuuChungTuPage() {
                 placeholder="Nhập mã tham chiếu"
                 value={referenceCode}
                 onChange={(e) => setReferenceCode(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)] placeholder-gray-400"
               />
             </div>
 
             {/* From Date */}
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">
-                Từ ngày <span className="text-red-600">*</span>
+                Từ ngày <span className="text-[color:var(--color-primary)]">*</span>
               </label>
               <div className="relative">
                 <input
                   type="text"
                   value={fromDate}
                   onChange={(e) => setFromDate(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
                 />
                 <Calendar className="absolute right-3 top-3 w-5 h-5 text-gray-700 pointer-events-none" />
               </div>
@@ -91,14 +91,14 @@ export default function TraCuuChungTuPage() {
             {/* To Date */}
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">
-                Đến ngày <span className="text-red-600">*</span>
+                Đến ngày <span className="text-[color:var(--color-primary)]">*</span>
               </label>
               <div className="relative">
                 <input
                   type="text"
                   value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
                 />
                 <Calendar className="absolute right-3 top-3 w-5 h-5 text-gray-700 pointer-events-none" />
               </div>
@@ -107,7 +107,7 @@ export default function TraCuuChungTuPage() {
             {/* Search Button */}
             <button
               onClick={handleSearch}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-full transition-colors"
+              className="w-full bg-[color:var(--color-primary)] hover:opacity-90 text-white font-medium py-3 rounded-full transition-colors"
             >
               Tra cứu
             </button>
@@ -115,7 +115,7 @@ export default function TraCuuChungTuPage() {
             {/* No Data Message */}
             {searched && !hasResults && (
               <div className="text-center py-8">
-                <p className="text-red-600 font-medium">Không tìm thấy dữ liệu</p>
+                <p className="text-[color:var(--color-primary)] font-medium">Không tìm thấy dữ liệu</p>
               </div>
             )}
 
@@ -125,19 +125,19 @@ export default function TraCuuChungTuPage() {
                 <table className="w-full border-collapse" style={{ fontFamily: "'Roboto', 'Helvetica Neue', Arial, sans-serif" }}>
                   <thead>
                     <tr>
-                      <th className="w-[25%] text-left font-semibold text-[14px] border border-[#d9d9d9] bg-[#f5f5f5] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
+                      <th className="w-[25%] text-left font-semibold text-[14px] border border-[color:var(--color-border-weak)] bg-[color:var(--color-surface-muted)] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
                         Mã tham chiếu
                       </th>
-                      <th className="w-[15%] text-right font-semibold text-[14px] border border-[#d9d9d9] bg-[#f5f5f5] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
+                      <th className="w-[15%] text-right font-semibold text-[14px] border border-[color:var(--color-border-weak)] bg-[color:var(--color-surface-muted)] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
                         Số tiền
                       </th>
-                      <th className="w-[20%] text-center font-semibold text-[14px] border border-[#d9d9d9] bg-[#f5f5f5] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
+                      <th className="w-[20%] text-center font-semibold text-[14px] border border-[color:var(--color-border-weak)] bg-[color:var(--color-surface-muted)] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
                         Ngày nộp
                       </th>
-                      <th className="w-[30%] text-left font-semibold text-[14px] border border-[#d9d9d9] bg-[#f5f5f5] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
+                      <th className="w-[30%] text-left font-semibold text-[14px] border border-[color:var(--color-border-weak)] bg-[color:var(--color-surface-muted)] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
                         Trạng thái
                       </th>
-                      <th className="w-[10%] text-center font-semibold text-[14px] border border-[#d9d9d9] bg-[#f5f5f5] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
+                      <th className="w-[10%] text-center font-semibold text-[14px] border border-[color:var(--color-border-weak)] bg-[color:var(--color-surface-muted)] text-[#333333]" style={{ fontWeight: 600, letterSpacing: '0.2px', padding: '8px 12px' }}>
                         In chứng từ
                       </th>
                     </tr>
@@ -146,7 +146,7 @@ export default function TraCuuChungTuPage() {
                     {mockResults.map((result) => (
                       <tr key={result.id} className="hover:bg-[#f0f8ff] transition-colors duration-200" style={{ minHeight: '40px' }}>
                         {/* Cột 1: Mã tham chiếu - 3 dòng (110202, 50044, 818128) */}
-                        <td className="text-left text-[14px] border border-[#d9d9d9] bg-white text-black align-middle" style={{ 
+                        <td className="text-left text-[14px] border border-[color:var(--color-border-weak)] bg-white text-black align-middle" style={{ 
                           padding: '8px 12px', 
                           whiteSpace: 'normal', 
                           lineHeight: '1.4', 
@@ -162,7 +162,7 @@ export default function TraCuuChungTuPage() {
                         </td>
                         
                         {/* Cột 2: Số tiền - căn phải */}
-                        <td className="text-right text-[14px] border border-[#d9d9d9] bg-white text-black align-middle" style={{ 
+                        <td className="text-right text-[14px] border border-[color:var(--color-border-weak)] bg-white text-black align-middle" style={{ 
                           padding: '8px 12px',
                           letterSpacing: '0.2px',
                           fontWeight: 400
@@ -171,7 +171,7 @@ export default function TraCuuChungTuPage() {
                         </td>
                         
                         {/* Cột 3: Ngày nộp - căn giữa */}
-                        <td className="text-center text-[14px] border border-[#d9d9d9] bg-white text-black align-middle" style={{ 
+                        <td className="text-center text-[14px] border border-[color:var(--color-border-weak)] bg-white text-black align-middle" style={{ 
                           padding: '8px 12px',
                           letterSpacing: '0.2px',
                           fontWeight: 400
@@ -180,7 +180,7 @@ export default function TraCuuChungTuPage() {
                         </td>
                         
                         {/* Cột 4: Trạng thái - wrap tự động */}
-                        <td className="text-left text-[14px] border border-[#d9d9d9] bg-white text-black align-middle" style={{ 
+                        <td className="text-left text-[14px] border border-[color:var(--color-border-weak)] bg-white text-black align-middle" style={{ 
                           padding: '8px 12px', 
                           whiteSpace: 'normal', 
                           lineHeight: '1.4', 
@@ -192,7 +192,7 @@ export default function TraCuuChungTuPage() {
                         </td>
                         
                         {/* Cột 5: In chứng từ - Radio button */}
-                        <td className="text-center border border-[#d9d9d9] bg-white align-middle" style={{ padding: '8px 12px' }}>
+                        <td className="text-center border border-[color:var(--color-border-weak)] bg-white align-middle" style={{ padding: '8px 12px' }}>
                           <button
                             onClick={() => handlePrintClick(result)}
                             className="inline-flex items-center justify-center w-4 h-4 rounded-full border-2 border-[#e60000] hover:opacity-80 transition-opacity"
@@ -225,7 +225,7 @@ export default function TraCuuChungTuPage() {
                 {/* Print Button */}
                 <button
                   onClick={() => handlePrintClick(mockResults[0])}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-full transition-colors"
+                  className="w-full bg-[color:var(--color-primary)] hover:opacity-90 text-white font-medium py-3 rounded-full transition-colors"
                 >
                   In chứng từ
                 </button>
@@ -243,13 +243,13 @@ export default function TraCuuChungTuPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowPrintModal(false)}
-                className="flex-1 px-4 py-3 border-2 border-red-600 text-red-600 font-medium rounded-lg hover:bg-red-50 transition-colors"
+                className="flex-1 px-4 py-3 border-2 border-[color:var(--color-primary)] text-[color:var(--color-primary)] font-medium rounded-lg hover:bg-red-50 transition-colors"
               >
                 Hủy bỏ
               </button>
               <button
                 onClick={handleConfirmPrint}
-                className="flex-1 px-4 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+                className="flex-1 px-4 py-3 bg-[color:var(--color-primary)] text-white font-medium rounded-lg hover:opacity-90 transition-colors"
               >
                 Đồng ý
               </button>

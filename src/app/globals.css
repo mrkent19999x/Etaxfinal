@@ -38,11 +38,19 @@
   --sidebar-border: oklch(0.9 0 0);
   --sidebar-ring: oklch(0.5 0.2 12);
 
-  /* Added eTax specific colors */
-  --etax-red: #dc143c;
-  --etax-header: #8f1015;
+  /* Design tokens (standardized) */
+  --color-primary: #C60000;            /* brand red */
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F5F5F5;
+  --color-text-primary: #000000;
+  --color-text-inverse: #FFFFFF;
+  --color-border-weak: #D9D9D9;
+
+  /* Backward-compatible aliases */
+  --etax-red: var(--color-primary);
+  --etax-header: var(--color-primary);
   --etax-dark-blue: #1a2a3a;
-  --etax-light-gray: #f5f5f5;
+  --etax-light-gray: var(--color-surface-muted);
 }
 
 .dark {
@@ -182,6 +190,19 @@ body {
   scroll-behavior: smooth;
 }
 
+/* Screen reader only class - visually hidden but accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 body {
   margin: 0 !important;
   padding: 0 !important;
@@ -262,7 +283,7 @@ body {
 }
 
 .etax-header {
-  background-color: var(--etax-header, #8f1015);
+  background-color: var(--color-primary);
   color: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }

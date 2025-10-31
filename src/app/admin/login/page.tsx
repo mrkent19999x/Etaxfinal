@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow p-8">
-        <h1 className="text-2xl font-bold text-center text-red-600">Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold text-center text-[color:var(--color-primary)]">Admin Dashboard</h1>
         <p className="text-center text-gray-600 mt-2">Đăng nhập để quản lý dữ liệu người dùng</p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -76,7 +76,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-lg bg-red-600 py-2 text-white font-semibold hover:bg-red-700 transition disabled:opacity-50"
+            className="w-full rounded-lg bg-[color:var(--color-primary)] py-2 text-white font-semibold hover:opacity-90 transition disabled:opacity-50"
           >
             {submitting ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>

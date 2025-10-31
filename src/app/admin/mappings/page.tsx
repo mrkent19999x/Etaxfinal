@@ -45,11 +45,29 @@ export default function AdminMappingsPage() {
 
   useEffect(() => {
     if (!isAdmin) return
-    const data = listUserAccounts()
-    setAccounts(data)
-    if (data.length > 0) {
-      setSelectedAccountId((prev) => prev || data[0].id)
-      setSelectedMst((prev) => prev || data[0].mstList[0] || "")
+
+    let cancelled = false
+
+    ;(async () => {
+      try {
+        const data = await listUserAccounts()
+        if (cancelled) return
+
+        setAccounts(data)
+        if (data.length > 0) {
+          setSelectedAccountId((prev) => prev || data[0].id)
+          setSelectedMst((prev) => prev || data[0].mstList[0] || "")
+        }
+      } catch (error) {
+        if (cancelled) return
+        console.error("Không thể tải danh sách tài khoản", error)
+        setStatusMessage("Không thể tải danh sách tài khoản. Thử lại sau nhé.")
+        setAccounts([])
+      }
+    })()
+
+    return () => {
+      cancelled = true
     }
   }, [isAdmin])
 
@@ -58,14 +76,35 @@ export default function AdminMappingsPage() {
       setRows([])
       return
     }
-    const mapping = getMapping(selectedMst)
-    if (mapping.length > 0) {
-      setRows(mapping)
-    } else {
-      setRows([
-        { ...createRow(), targetField: "taxCode", required: true },
-        { ...createRow(), targetField: "fullName", required: true },
-      ])
+
+    let cancelled = false
+
+    ;(async () => {
+      try {
+        const mapping = await getMapping(selectedMst)
+        if (cancelled) return
+
+        if (mapping.length > 0) {
+          setRows(mapping)
+        } else {
+          setRows([
+            { ...createRow(), targetField: "taxCode", required: true },
+            { ...createRow(), targetField: "fullName", required: true },
+          ])
+        }
+      } catch (error) {
+        if (cancelled) return
+        console.error("Không thể tải mapping cho MST", selectedMst, error)
+        setStatusMessage("Không thể tải mapping. Thử chọn lại MST hoặc tải lại trang.")
+        setRows([
+          { ...createRow(), targetField: "taxCode", required: true },
+          { ...createRow(), targetField: "fullName", required: true },
+        ])
+      }
+    })()
+
+    return () => {
+      cancelled = true
     }
   }, [selectedMst])
 
@@ -108,7 +147,7 @@ export default function AdminMappingsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-red-600" />
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-[color:var(--color-primary)]" />
           <p className="mt-4 text-gray-600">Đang kiểm tra quyền truy cập...</p>
         </div>
       </div>
@@ -164,13 +203,13 @@ export default function AdminMappingsPage() {
               <div className="flex gap-3">
                 <button
                   onClick={addRow}
-                  className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:border-red-500 hover:text-red-600"
+                  className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:border-[color:var(--color-primary)] hover:text-[color:var(--color-primary)]"
                 >
                   Thêm dòng
                 </button>
                 <button
                   onClick={handleSave}
-                  className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+                  className="rounded-full bg-[color:var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
                 >
                   Lưu cấu hình
                 </button>
@@ -184,7 +223,7 @@ export default function AdminMappingsPage() {
                     <p className="text-sm font-semibold text-gray-700">Cột {index + 1}</p>
                     <button
                       onClick={() => removeRow(row.id)}
-                      className="text-sm text-gray-500 hover:text-red-600"
+                      className="text-sm text-gray-500 hover:text-[color:var(--color-primary)]"
                     >
                       Xóa
                     </button>

@@ -48,7 +48,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             >
               {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-            <h1 className="text-xl font-bold text-red-600">Admin Dashboard</h1>
+            <h1 className="text-xl font-bold text-[color:var(--color-primary)]">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">{userData?.name || user?.email}</span>
@@ -83,7 +83,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                     <Link
                       href={item.href}
                       onClick={() => setSidebarOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-[color:var(--color-primary)] rounded-lg transition-colors"
                     >
                       <Icon size={20} />
                       <span>{item.label}</span>
@@ -111,4 +111,3 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     </div>
   )
 }
-

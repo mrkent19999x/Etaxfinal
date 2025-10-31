@@ -22,7 +22,7 @@ export default function TraCuuThongTinQuyetToanPage() {
                 key={service.id}
                 className="flex flex-col items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
               >
-                <div className="w-16 h-16 rounded-2xl bg-red-600 flex items-center justify-center text-3xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-16 h-16 rounded-2xl bg-[color:var(--color-primary)] flex items-center justify-center text-3xl shadow-sm hover:shadow-md transition-shadow">
                   {service.icon}
                 </div>
                 <p className="text-xs text-center text-gray-700 font-medium leading-tight">{service.label}</p>

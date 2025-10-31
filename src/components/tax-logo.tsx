@@ -2,7 +2,7 @@ export function TaxLogo() {
   return (
     <svg viewBox="0 0 200 200" className="w-24 h-24 mx-auto" xmlns="http://www.w3.org/2000/svg">
       {/* Red circle background */}
-      <circle cx="100" cy="100" r="95" fill="#DC143C" />
+      <circle cx="100" cy="100" r="95" fill="currentColor" style={{ color: 'var(--color-primary)' }} />
 
       {/* Yellow star */}
       <g transform="translate(100, 70)">

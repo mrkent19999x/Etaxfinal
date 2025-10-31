@@ -22,7 +22,7 @@ export function ProtectedView({ children, fallback }: ProtectedViewProps) {
       fallback ?? (
         <div className="phone-frame flex items-center justify-center bg-gray-100">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#DC143C] mx-auto" />
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[color:var(--color-primary)] mx-auto" />
             <p className="mt-4 text-gray-600">Đang tải...</p>
           </div>
         </div>

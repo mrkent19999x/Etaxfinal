@@ -26,7 +26,7 @@ export default function EtaxMobileHome() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#DC143C] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[color:var(--color-primary)] mx-auto"></div>
           <p className="mt-4 text-gray-600">Đang tải dữ liệu người dùng...</p>
         </div>
       </div>
@@ -57,95 +57,124 @@ export default function EtaxMobileHome() {
     <div className="phone-frame">
       <div className="flex flex-col h-full">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <div className="etax-header px-6 py-4 flex items-center justify-between text-white" style={etaxHeaderStyle}>
-          <button onClick={() => setSidebarOpen(true)} className="hover:opacity-80 transition-opacity">
-            <Menu className="w-6 h-6 cursor-pointer" />
+        <header className="etax-header px-6 py-4 flex items-center justify-between text-white" style={etaxHeaderStyle} aria-label="Header chính">
+          <button 
+            onClick={() => setSidebarOpen(true)} 
+            className="hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm"
+            aria-label="Mở menu điều hướng"
+            aria-expanded={sidebarOpen}
+          >
+            <Menu className="w-6 h-6 cursor-pointer" aria-hidden="true" />
           </button>
           <div className="absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center">
-            <Image src="/assets/logo.webp" alt="Logo" width={48} height={48} className="mb-1" priority />
+            <Image src="/assets/logo.webp" alt="Logo eTax Mobile - Về trang chủ" width={48} height={48} className="mb-1" priority />
             <h1 className="font-light text-lg">eTax Mobile</h1>
           </div>
           <div className="flex gap-4">
-            <QrCode className="w-6 h-6 cursor-pointer" />
-            <button onClick={() => router.push("/thong-bao")} className="hover:opacity-80 transition-opacity">
-              <Bell className="w-6 h-6 cursor-pointer" />
+            <button 
+              className="hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm"
+              aria-label="Quét QR code"
+            >
+              <QrCode className="w-6 h-6 cursor-pointer" aria-hidden="true" />
+            </button>
+            <button 
+              onClick={() => router.push("/thong-bao")} 
+              className="hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm"
+              aria-label="Xem thông báo"
+            >
+              <Bell className="w-6 h-6 cursor-pointer" aria-hidden="true" />
             </button>
           </div>
-        </div>
+        </header>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto bg-[#f5f5f5]" style={{ backgroundImage: 'url(/assets/sidebar/nen.png)', backgroundSize: 'cover', backgroundPosition: 'center top', backgroundRepeat: 'no-repeat' }}>
+        <main className="flex-1 overflow-y-auto bg-[color:var(--color-surface-muted)]" style={{ backgroundImage: 'url(/assets/sidebar/nen.png)', backgroundSize: 'cover', backgroundPosition: 'center top', backgroundRepeat: 'no-repeat' }} id="main-content">
           {/* User Profile Card */}
           <div className="mx-4 mt-2 bg-white rounded-2xl p-3 flex items-center gap-3 shadow-sm" style={{ backgroundImage: 'url(/assets/backgrounftd.png)', backgroundSize: 'cover', backgroundPosition: 'right center', backgroundRepeat: 'no-repeat' }}>
-            <div className="w-16 h-16 rounded-full border-4 border-[#DC143C] bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
-              <Image src="/assets/avatar.png" alt="Avatar" width={64} height={64} className="object-contain" />
+            <div className="w-16 h-16 rounded-full border-4 border-[color:var(--color-primary)] bg-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
+              <Image src="/assets/avatar.png" alt={`Ảnh đại diện của ${session.name ?? session.mst}`} width={64} height={64} className="object-contain" />
             </div>
             <div className="flex-1">
               <p className="text-gray-600 text-sm">MST: {session.mst}</p>
               <div className="flex items-center gap-2">
-                <p className="text-[#DC143C] font-bold text-lg">{session.name ?? session.mst}</p>
-                <Link href="/thong-tin-tai-khoan" className="flex-shrink-0 hover:opacity-80 transition-opacity">
-                  <Image src="/assets/nutha.png" alt="Navigate to account" width={20} height={20} className="object-contain" />
+                <p className="text-[color:var(--color-primary)] font-bold text-lg">{session.name ?? session.mst}</p>
+                <Link 
+                  href="/thong-tin-tai-khoan" 
+                  className="flex-shrink-0 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-red-300 rounded-sm"
+                  aria-label="Xem thông tin tài khoản"
+                >
+                  <Image src="/assets/nutha.png" alt="" width={20} height={20} className="object-contain" aria-hidden="true" />
                 </Link>
               </div>
             </div>
           </div>
 
           {/* Frequently Used Features */}
-          <div className="mx-4 mt-2 bg-white rounded-2xl p-5 shadow-sm">
+          <section className="mx-4 mt-2 bg-white rounded-2xl p-5 shadow-sm" aria-labelledby="frequent-features-heading">
             <div className="mb-4">
-              <h2 className="text-lg font-bold text-gray-800">Chức năng hay dùng</h2>
+              <h2 id="frequent-features-heading" className="text-lg font-bold text-gray-800">Chức năng hay dùng</h2>
             </div>
 
             {/* Horizontal Scroll */}
             <div className="overflow-x-auto -mx-4 px-4 scrollbar-hide">
-              <div className="flex gap-4 min-w-max">
+              <nav className="flex gap-4 min-w-max" aria-label="Danh sách chức năng thường dùng">
                 {frequentFeatures.map((feature) => (
-                  <Link key={feature.id} href={feature.href} prefetch={false}>
-                    <div className="flex-shrink-0 w-24 flex flex-col items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-                      <div className="w-14 h-14 flex items-center justify-center overflow-hidden">
-                        <Image 
-                          src={`/assets/${feature.icon}`} 
-                          alt={feature.label} 
-                          width={48} 
-                          height={48}
-                          className="object-contain w-full h-full"
-                        />
-                      </div>
-                      <p className="text-xs text-center text-gray-700 font-medium leading-tight">{feature.label}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Service Grid */}
-          <div className="mx-4 mt-2 bg-white rounded-2xl p-5 shadow-sm mb-6" style={{ 
-            marginBottom: "calc(24px + env(safe-area-inset-bottom, 0px))"
-          }}>
-            <h2 className="text-lg font-bold text-gray-800 mb-6">Danh sách nhóm dịch vụ</h2>
-
-            <div className="grid grid-cols-3 gap-6">
-              {services.map((service) => (
-                <Link key={service.id} href={service.href} prefetch={false} className={service.href === "#" ? "pointer-events-none" : ""}>
-                  <div className="flex flex-col items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+                  <Link 
+                    key={feature.id} 
+                    href={feature.href} 
+                    prefetch={false}
+                    className="flex-shrink-0 w-24 flex flex-col items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-red-300 rounded-lg"
+                    aria-label={feature.label}
+                  >
                     <div className="w-14 h-14 flex items-center justify-center overflow-hidden">
                       <Image 
-                        src={`/assets/${service.icon}`} 
-                        alt={service.label} 
+                        src={`/assets/${feature.icon}`} 
+                        alt="" 
                         width={48} 
                         height={48}
                         className="object-contain w-full h-full"
+                        aria-hidden="true"
                       />
                     </div>
-                    <p className="text-xs text-center text-gray-700 font-medium leading-tight">{service.label}</p>
+                    <p className="text-xs text-center text-gray-700 font-medium leading-tight">{feature.label}</p>
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </section>
+
+          {/* Service Grid */}
+          <section className="mx-4 mt-2 bg-white rounded-2xl p-5 shadow-sm mb-6" style={{ 
+            marginBottom: "calc(24px + env(safe-area-inset-bottom, 0px))"
+          }} aria-labelledby="services-heading">
+            <h2 id="services-heading" className="text-lg font-bold text-gray-800 mb-6">Danh sách nhóm dịch vụ</h2>
+
+            <nav className="grid grid-cols-3 gap-6" aria-label="Danh sách dịch vụ">
+              {services.map((service) => (
+                <Link 
+                  key={service.id} 
+                  href={service.href} 
+                  prefetch={false} 
+                  className={`flex flex-col items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-red-300 rounded-lg ${service.href === "#" ? "pointer-events-none opacity-50" : ""}`}
+                  aria-label={service.label}
+                  aria-disabled={service.href === "#"}
+                >
+                  <div className="w-14 h-14 flex items-center justify-center overflow-hidden">
+                    <Image 
+                      src={`/assets/${service.icon}`} 
+                      alt="" 
+                      width={48} 
+                      height={48}
+                      className="object-contain w-full h-full"
+                      aria-hidden="true"
+                    />
                   </div>
+                  <p className="text-xs text-center text-gray-700 font-medium leading-tight">{service.label}</p>
                 </Link>
               ))}
-            </div>
-          </div>
-        </div>
+            </nav>
+          </section>
+        </main>
       </div>
     </div>
   )

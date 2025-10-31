@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { adminAuth, adminDb } from "@/lib/firebase-admin"
+import { adminDb } from "@/lib/firebase-admin"
 import { cookies } from "next/headers"
 import type { MappingRow } from "@/lib/data-store"
 
@@ -22,8 +22,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ mst:
   try {
     await verifyAuth()
     const { mst } = await params
+    const db = adminDb
 
-    const mappingDoc = await adminDb.collection("mappings").doc(mst).get()
+    if (!db) {
+      console.error("[API /mappings/[mst] GET] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
+
+    const mappingDoc = await db.collection("mappings").doc(mst).get()
 
     if (!mappingDoc.exists) {
       return NextResponse.json({ mappings: [] })
@@ -68,7 +74,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ mst:
       return NextResponse.json({ error: "Dữ liệu không hợp lệ" }, { status: 400 })
     }
 
-    await adminDb.collection("mappings").doc(mst).set(
+    const db = adminDb
+
+    if (!db) {
+      console.error("[API /mappings/[mst] PUT] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
+
+    await db.collection("mappings").doc(mst).set(
       {
         mst,
         rows,

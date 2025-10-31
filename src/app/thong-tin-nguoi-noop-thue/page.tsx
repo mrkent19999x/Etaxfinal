@@ -55,7 +55,7 @@ export default function ThongTinNguoiNopThuePage() {
           {/* Profile Card */}
           <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-20 h-20 rounded-full border-4 border-red-600 bg-gray-100 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full border-4 bg-gray-100 flex items-center justify-center" style={{ borderColor: 'var(--color-primary)' }}>
                 <span className="text-4xl">🏢</span>
               </div>
               <div>
@@ -125,7 +125,7 @@ export default function ThongTinNguoiNopThuePage() {
 
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-4">
-            <button className="bg-red-600 hover:bg-red-700 text-white rounded-xl py-4 px-4 font-semibold transition-colors">
+            <button className="bg-[color:var(--color-primary)] hover:opacity-90 text-white rounded-xl py-4 px-4 font-semibold transition-colors">
               Cập nhật thông tin
             </button>
             <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl py-4 px-4 font-semibold transition-colors">

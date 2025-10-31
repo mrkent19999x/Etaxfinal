@@ -25,14 +25,21 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Session không hợp lệ" }, { status: 401 })
     }
 
+    const db = adminDb
+    const auth = adminAuth
+    if (!db || !auth) {
+      console.error("[API /auth/me] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
+
     // Get user data from Firestore
-    const userDoc = await adminDb.collection("users").where("uid", "==", uid).limit(1).get()
+    const userDoc = await db.collection("users").where("uid", "==", uid).limit(1).get()
 
     if (userDoc.empty) {
       // If admin, might not have user doc
       if (admin) {
         try {
-          const adminUser = await adminAuth.getUser(uid)
+          const adminUser = await auth.getUser(uid)
           return NextResponse.json({
             user: {
               id: uid,
@@ -62,7 +69,7 @@ export async function GET(req: NextRequest) {
     // Get profile if user
     let profile = null
     if (userMst) {
-      const profileDoc = await adminDb.collection("profiles").doc(userMst).get()
+      const profileDoc = await db.collection("profiles").doc(userMst).get()
       if (profileDoc.exists) {
         profile = profileDoc.data()
       }

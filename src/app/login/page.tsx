@@ -75,22 +75,28 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} className="w-full space-y-6">
           {/* MST Input */}
           <div>
+            <label htmlFor="mst-input" className="sr-only">
+              Mã số thuế
+            </label>
             <div className="flex items-center gap-3 min-h-[48px]">
               <Image 
                 src="/assets/icon-mst-new.svg" 
-                alt="MST icon" 
+                alt="" 
                 width={18} 
                 height={18}
                 className="opacity-90"
+                aria-hidden="true"
               />
               <input
+                id="mst-input"
                 type="text"
                 inputMode="numeric"
                 placeholder="Mã số thuế"
                 value={mst}
                 onChange={(e) => setMst(e.target.value)}
-                className="flex-1 bg-transparent text-white text-base py-2 outline-none placeholder:text-white/70"
-                autoComplete="off"
+                className="flex-1 bg-transparent text-white text-base py-2 outline-none placeholder:text-white/90 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent rounded-sm"
+                autoComplete="username"
+                aria-required="true"
                 style={{ touchAction: 'manipulation' }}
               />
             </div>
@@ -99,36 +105,43 @@ export default function LoginPage() {
 
           {/* Password Input */}
           <div>
+            <label htmlFor="password-input" className="sr-only">
+              Mật khẩu
+            </label>
             <div className="flex items-center gap-3 min-h-[48px]">
               <Image 
                 src="/assets/icon-password-new.svg" 
-                alt="Password icon" 
+                alt="" 
                 width={18} 
                 height={18}
                 className="opacity-90"
+                aria-hidden="true"
               />
               <input
+                id="password-input"
                 type={showPassword ? "text" : "password"}
                 placeholder="Mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="flex-1 bg-transparent text-white text-base py-2 outline-none placeholder:text-white/70"
-                autoComplete="off"
+                className="flex-1 bg-transparent text-white text-base py-2 outline-none placeholder:text-white/90 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent rounded-sm"
+                autoComplete="current-password"
+                aria-required="true"
                 style={{ touchAction: 'manipulation' }}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="w-[38px] h-[38px] flex items-center justify-center"
+                className="w-[38px] h-[38px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm"
                 aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                 style={{ touchAction: 'manipulation' }}
               >
                 <Image 
                   src={showPassword ? "/assets/icon-eye.svg" : "/assets/icon-eye-closed.svg"}
-                  alt="Toggle password"
+                  alt=""
                   width={20}
                   height={20}
                   className="opacity-70"
+                  aria-hidden="true"
                 />
               </button>
             </div>
@@ -137,7 +150,9 @@ export default function LoginPage() {
 
           {/* Error Message */}
           {error && (
-            <p className="text-red-400 text-sm text-center">{error}</p>
+            <p className="text-red-300 text-sm text-center font-medium" role="alert" aria-live="assertive">
+              {error}
+            </p>
           )}
 
           {/* Help Links */}
@@ -155,16 +170,17 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-[52px] rounded-[28px] bg-[#DC143C] text-white font-bold text-base tracking-wide hover:bg-red-700 active:scale-[0.98] disabled:opacity-50 transition-all flex items-center justify-center"
+              className="w-full h-[52px] rounded-[28px] bg-[color:var(--color-primary)] text-white font-bold text-base tracking-wide hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all flex items-center justify-center focus:outline-none"
               style={{ touchAction: 'manipulation' }}
+              aria-label={isLoading ? "Đang đăng nhập, vui lòng đợi" : "Đăng nhập"}
             >
               {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
             {/* Fingerprint Icon Overlay */}
-            <div className="absolute right-0 top-0 bottom-0 flex items-center pr-2">
+            <div className="absolute right-0 top-0 bottom-0 flex items-center pr-2 pointer-events-none" aria-hidden="true">
               <Image 
                 src="/assets/faceid1.webp"
-                alt="Fingerprint"
+                alt=""
                 width={24}
                 height={24}
                 className="object-contain"
@@ -176,15 +192,17 @@ export default function LoginPage() {
         {/* VNeID Login */}
         <div className="w-full mt-6">
           <button 
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-white border border-white/20 hover:bg-white/10 active:scale-[0.98] transition-all"
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-white border border-white/20 hover:bg-white/10 active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-white/30 focus:ring-offset-2 focus:ring-offset-transparent"
             style={{ touchAction: 'manipulation' }}
+            aria-label="Đăng nhập bằng tài khoản Định danh điện tử VNeID"
           >
             <Image 
               src="/assets/vnid.webp" 
-              alt="VNeID" 
+              alt="" 
               width={36}
               height={36}
               className="object-contain"
+              aria-hidden="true"
             />
             <span className="text-black font-semibold">Đăng nhập bằng tài khoản Định danh điện tử</span>
           </button>
@@ -208,24 +226,40 @@ export default function LoginPage() {
       </div>
 
       {/* Bottom Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[rgba(0,0,0,0.3)] backdrop-blur-sm border-t border-white/10 flex items-center justify-around py-2 px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-        <button className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity" style={{ touchAction: 'manipulation' }}>
-          <Image src="/assets/icon-qr.webp" alt="QR Tem" width={24} height={24} className="opacity-90" />
+      <nav className="fixed bottom-0 left-0 right-0 bg-[rgba(0,0,0,0.3)] backdrop-blur-sm border-t border-white/10 flex items-center justify-around py-2 px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }} aria-label="Thanh điều hướng dưới cùng">
+        <button 
+          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm" 
+          style={{ touchAction: 'manipulation' }}
+          aria-label="QR tem"
+        >
+          <Image src="/assets/icon-qr.webp" alt="" width={24} height={24} className="opacity-90" aria-hidden="true" />
           <span className="text-xs text-white">QR tem</span>
         </button>
-        <button className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity" style={{ touchAction: 'manipulation' }}>
-          <Image src="/assets/tienich.png" alt="Tiện ích" width={24} height={24} className="opacity-90" />
+        <button 
+          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm" 
+          style={{ touchAction: 'manipulation' }}
+          aria-label="Tiện ích"
+        >
+          <Image src="/assets/tienich.png" alt="" width={24} height={24} className="opacity-90" aria-hidden="true" />
           <span className="text-xs text-white">Tiện ích</span>
         </button>
-        <button className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity" style={{ touchAction: 'manipulation' }}>
-          <Image src="/assets/hotro.png" alt="Hỗ trợ" width={24} height={24} className="opacity-90" />
+        <button 
+          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm" 
+          style={{ touchAction: 'manipulation' }}
+          aria-label="Hỗ trợ"
+        >
+          <Image src="/assets/hotro.png" alt="" width={24} height={24} className="opacity-90" aria-hidden="true" />
           <span className="text-xs text-white">Hỗ trợ</span>
         </button>
-        <button className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity" style={{ touchAction: 'manipulation' }}>
-          <Image src="/assets/chiase.png" alt="Chia sẻ" width={24} height={24} className="opacity-90" />
+        <button 
+          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm" 
+          style={{ touchAction: 'manipulation' }}
+          aria-label="Chia sẻ"
+        >
+          <Image src="/assets/chiase.png" alt="" width={24} height={24} className="opacity-90" aria-hidden="true" />
           <span className="text-xs text-white">Chia sẻ</span>
         </button>
-      </div>
+      </nav>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { adminAuth, adminDb } from "@/lib/firebase-admin"
+import { adminDb } from "@/lib/firebase-admin"
 import { cookies } from "next/headers"
 import type { MstProfile } from "@/lib/data-store"
 
@@ -23,7 +23,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ mst:
     await verifyAuth()
     const { mst } = await params
 
-    const profileDoc = await adminDb.collection("profiles").doc(mst).get()
+    const db = adminDb
+    if (!db) {
+      console.error("[API /profiles/[mst] GET] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
+
+    const profileDoc = await db.collection("profiles").doc(mst).get()
 
     if (!profileDoc.exists) {
       return NextResponse.json({ profile: null })
@@ -67,7 +73,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ mst:
       return NextResponse.json({ error: "MST không khớp" }, { status: 400 })
     }
 
-    await adminDb.collection("profiles").doc(mst).set(
+    const db = adminDb
+    if (!db) {
+      console.error("[API /profiles/[mst] PUT] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
+
+    await db.collection("profiles").doc(mst).set(
       {
         ...profile,
         updatedAt: new Date().toISOString(),

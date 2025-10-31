@@ -1,0 +1,49 @@
+flowchart TD
+  A[Dang nhap] --> B[Trang chu / eTax Mobile]
+
+  B --> M[Menu chinh - Drawer]
+  B --> N[Thong bao]
+  B --> C[Cai dat chuc nang hay dung]
+
+  M --> B
+  M --> HDE[Hoa don dien tu]
+  M --> KT[Khai thue]
+  M --> DK[Dang ky thue]
+  M --> QTT[Ho tro quyet toan thue TNCN]
+  M --> NT[Nhom chuc nang nop thue]
+  M --> NV[Tra cuu nghia vu thue]
+  M --> TB[Tra cuu thong bao]
+  M --> TI[Tien ich]
+  M --> HT[Ho tro]
+  M --> TL[Thiet lap ca nhan]
+
+  N --> CTB[Chi tiet thong bao]
+  TB --> N
+  CTB --> PDF[Xem chung tu - iOS]
+  PDF --> CTB
+
+  NV --> NV1[Tra cuu nghia vu thue]
+  NV1 --> NV2[Thong tin nghia vu thue - form]
+  NV2 --> NV3[Thong tin nghia vu thue - ket qua]
+  NV3 --> CT[Thong tin chi tiet]
+  CT --> NV3
+
+  B --> NT
+  NT --> Nop[Nop thue]
+  Nop --> NopR[Ket qua tra cuu nop thue]
+  NT --> TCCT[Tra cuu chung tu]
+  TCCT --> TLKQ[Ket qua - bang]
+  TLKQ --> PDF
+  TLKQ --> TCCT
+
+  B --> KT
+  KT --> CNKD[Khai thue CNKD]
+  CNKD --> MS01[Mau so 01/CNKD]
+  MS01 --> MS01_Sub[Tien trinh nop ho so]
+
+  B --> HDE
+  B --> DK
+  B --> TI
+  B --> HT
+  B --> TL
+  TL --> DDMK[Doi mat khau]

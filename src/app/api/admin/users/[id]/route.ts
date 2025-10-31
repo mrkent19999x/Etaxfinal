@@ -29,11 +29,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     await verifyAdmin()
     const { id } = await params
 
+    const db = adminDb
+    const auth = adminAuth
+
+    if (!db || !auth) {
+      console.error("[API /admin/users/[id] PATCH] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
+
     const body = await req.json()
     const { name, email, password, role, mstList, phone } = body
 
     // Get existing user doc
-    const userDoc = await adminDb.collection("users").doc(id).get()
+    const userDoc = await db.collection("users").doc(id).get()
     if (!userDoc.exists) {
       return NextResponse.json({ error: "Không tìm thấy user" }, { status: 404 })
     }
@@ -50,15 +58,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (password) updateAuth.password = password
 
     if (Object.keys(updateAuth).length > 0) {
-      await adminAuth.updateUser(uid, updateAuth)
+      await auth.updateUser(uid, updateAuth)
     }
 
     // Update admin claim
     if (role !== undefined) {
       if (role === "admin") {
-        await adminAuth.setCustomUserClaims(uid, { admin: true })
+        await auth.setCustomUserClaims(uid, { admin: true })
       } else {
-        await adminAuth.setCustomUserClaims(uid, { admin: false })
+        await auth.setCustomUserClaims(uid, { admin: false })
       }
     }
 
@@ -72,9 +80,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (mstList !== undefined) updateDoc.mstList = mstList
     if (phone !== undefined) updateDoc.phone = phone || null
 
-    await adminDb.collection("users").doc(id).update(updateDoc)
+    await db.collection("users").doc(id).update(updateDoc)
 
-    const updatedDoc = await adminDb.collection("users").doc(id).get()
+    const updatedDoc = await db.collection("users").doc(id).get()
     return NextResponse.json({
       user: {
         id: updatedDoc.id,
@@ -96,8 +104,16 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     await verifyAdmin()
     const { id } = await params
 
+    const db = adminDb
+    const auth = adminAuth
+
+    if (!db || !auth) {
+      console.error("[API /admin/users/[id] DELETE] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
+
     // Get user doc
-    const userDoc = await adminDb.collection("users").doc(id).get()
+    const userDoc = await db.collection("users").doc(id).get()
     if (!userDoc.exists) {
       return NextResponse.json({ error: "Không tìm thấy user" }, { status: 404 })
     }
@@ -107,13 +123,13 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
     // Delete Firebase Auth user
     try {
-      await adminAuth.deleteUser(uid)
+      await auth.deleteUser(uid)
     } catch (error: any) {
       console.warn("[API /admin/users/[id] DELETE] Failed to delete auth user:", error)
     }
 
     // Delete Firestore doc
-    await adminDb.collection("users").doc(id).delete()
+    await db.collection("users").doc(id).delete()
 
     return NextResponse.json({ success: true })
   } catch (error: any) {

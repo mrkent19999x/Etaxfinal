@@ -7,24 +7,37 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "firebase:deploy": "firebase deploy"
+    "firebase:deploy": "firebase deploy",
+    "test:e2e": "node tools/smoke.test.js",
+    "test:e2e:dev": "concurrently -k -s first -n DEV,TEST \"npm run dev\" \"wait-on http://localhost:3000 && node tools/smoke.test.js\"",
+    "diagram:svg": "mmdc -p tools/puppeteer.config.json -i docs/diagrams/etax_navigation.mmd -o docs/diagrams/etax_navigation.svg -b transparent -t neutral",
+    "diagram:png": "mmdc -p tools/puppeteer.config.json -i docs/diagrams/etax_navigation.mmd -o docs/diagrams/etax_navigation.png -b transparent -t neutral",
+    "diagram:build": "npm run diagram:svg && npm run diagram:png",
+    "assets:webp": "node tools/optimize_assets.js public/assets"
   },
   "dependencies": {
     "firebase": "^10.13.2",
     "firebase-admin": "^12.6.0",
+    "jimp": "^0.22.12",
     "lucide-react": "^0.548.0",
     "next": "16.0.1",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "tesseract.js": "^6.0.1"
   },
   "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^10.9.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.0.1",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
+    "puppeteer": "^23.8.0",
+    "sharp": "^0.34.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^8.0.0"
   }
 }

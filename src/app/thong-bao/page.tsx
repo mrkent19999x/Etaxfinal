@@ -106,7 +106,7 @@ export default function NotificationsPage() {
               className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
             />
           </div>
-          <button className="text-red-600 font-medium text-sm flex items-center gap-1 px-3 py-2">
+          <button className="text-[color:var(--color-primary)] font-medium text-sm flex items-center gap-1 px-3 py-2">
             <span>➕</span>
             Nâng cao
           </button>

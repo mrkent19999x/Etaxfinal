@@ -27,7 +27,7 @@ export default function AccountInfoPage() {
       <div className="bg-gray-800 px-6 pt-16 pb-6 flex-shrink-0 min-h-[50dvh] flex flex-col">
         {/* Avatar Icon - Ở trên cùng khung 2, cách topbar rõ ràng */}
         <div className="flex justify-center pt-4">
-          <div className="w-32 h-32 rounded-full bg-white p-2 border-2 border-red-700">
+          <div className="w-32 h-32 rounded-full bg-white p-2 border-2" style={{ borderColor: 'var(--color-primary)' }}>
             <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -38,22 +38,22 @@ export default function AccountInfoPage() {
 
         {/* 4 Nút bấm - Kích thước bằng nhau */}
         <div className="grid grid-cols-2 gap-4 mt-12">
-          <button className="bg-red-600 hover:bg-red-700 rounded-2xl h-14 w-full px-4 flex items-center justify-center space-x-2 transition-colors">
+          <button className="bg-[color:var(--color-primary)] hover:opacity-90 rounded-2xl h-14 w-full px-4 flex items-center justify-center space-x-2 transition-colors">
             <Edit className="w-6 h-6 text-white flex-shrink-0" />
             <span className="text-white text-sm font-medium whitespace-nowrap">Thay đổi thông tin</span>
           </button>
 
-          <button className="bg-red-600 hover:bg-red-700 rounded-2xl h-14 w-full px-4 flex items-center justify-center space-x-2 transition-colors">
+          <button className="bg-[color:var(--color-primary)] hover:opacity-90 rounded-2xl h-14 w-full px-4 flex items-center justify-center space-x-2 transition-colors">
             <QrCode className="w-6 h-6 text-white flex-shrink-0" />
             <span className="text-white text-sm font-medium whitespace-nowrap">Mã QR-Code thông</span>
           </button>
 
-          <Link href="/doi-mat-khau" className="bg-red-600 hover:bg-red-700 rounded-2xl h-14 w-full px-4 flex items-center justify-center space-x-2 transition-colors">
+          <Link href="/doi-mat-khau" className="bg-[color:var(--color-primary)] hover:opacity-90 rounded-2xl h-14 w-full px-4 flex items-center justify-center space-x-2 transition-colors">
             <Lock className="w-6 h-6 text-white flex-shrink-0" />
             <span className="text-white text-sm font-medium whitespace-nowrap">Đổi mật khẩu</span>
           </Link>
 
-          <button className="bg-red-600 hover:bg-red-700 rounded-2xl h-14 w-full px-4 flex items-center justify-center space-x-2 transition-colors">
+          <button className="bg-[color:var(--color-primary)] hover:opacity-90 rounded-2xl h-14 w-full px-4 flex items-center justify-center space-x-2 transition-colors">
             <Trash2 className="w-6 h-6 text-white flex-shrink-0" />
             <span className="text-white text-sm font-medium whitespace-nowrap">Xoá tài khoản</span>
           </button>

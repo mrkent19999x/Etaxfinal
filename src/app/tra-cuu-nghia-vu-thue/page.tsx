@@ -124,14 +124,14 @@ export default function TraCuuNghiaVuThuePage() {
           {/* MST Display */}
           <div className="mx-4 mt-6 bg-white rounded-lg p-4 shadow-sm">
             <p className="text-gray-600 text-sm">Mã số thuế</p>
-            <p className="text-red-600 font-bold text-lg">{(session.mst ?? "00109202830")}</p>
+            <p className="text-[color:var(--color-primary)] font-bold text-lg">{(session.mst ?? "00109202830")}</p>
           </div>
 
           {/* Search Button */}
           <div className="mx-4 mt-4">
             <button
               onClick={handleSearch}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-full transition-colors"
+              className="w-full bg-[color:var(--color-primary)] hover:opacity-90 text-white font-semibold py-3 rounded-full transition-colors"
             >
               Tra cứu
             </button>
@@ -161,7 +161,7 @@ export default function TraCuuNghiaVuThuePage() {
                     </div>
                     <Link
                       href={`/tra-cuu-nghia-vu-thue/${obligation.id}`}
-                      className="flex-shrink-0 mt-1 text-red-600 hover:text-red-700 transition-colors"
+                      className="flex-shrink-0 mt-1 text-[color:var(--color-primary)] hover:opacity-90 transition-opacity"
                     >
                       <Eye size={20} />
                     </Link>

@@ -44,7 +44,7 @@ export default function VanTayPage() {
             <div
               onClick={() => setBiometricType("fingerprint")}
               className={`bg-white rounded-2xl p-6 shadow-sm cursor-pointer transition-all ${
-                biometricType === "fingerprint" ? "border-2 border-red-600" : "border border-gray-200"
+                biometricType === "fingerprint" ? "border-2 border-[color:var(--color-primary)]" : "border border-gray-200"
               }`}
             >
               <div className="flex items-center gap-4">
@@ -54,7 +54,7 @@ export default function VanTayPage() {
                   }`}
                 >
                   <Fingerprint
-                    className={`w-8 h-8 ${biometricType === "fingerprint" ? "text-red-600" : "text-gray-400"}`}
+                    className={`w-8 h-8 ${biometricType === "fingerprint" ? "text-[color:var(--color-primary)]" : "text-gray-400"}`}
                   />
                 </div>
                 <div className="flex-1">
@@ -67,7 +67,7 @@ export default function VanTayPage() {
                     handleToggle()
                   }}
                   className={`w-12 h-7 rounded-full transition-colors ${
-                    isEnabled && biometricType === "fingerprint" ? "bg-red-600" : "bg-gray-300"
+                    isEnabled && biometricType === "fingerprint" ? "bg-[color:var(--color-primary)]" : "bg-gray-300"
                   }`}
                 >
                   <div
@@ -83,7 +83,7 @@ export default function VanTayPage() {
             <div
               onClick={() => setBiometricType("face")}
               className={`bg-white rounded-2xl p-6 shadow-sm cursor-pointer transition-all ${
-                biometricType === "face" ? "border-2 border-red-600" : "border border-gray-200"
+                biometricType === "face" ? "border-2 border-[color:var(--color-primary)]" : "border border-gray-200"
               }`}
             >
               <div className="flex items-center gap-4">
@@ -92,7 +92,7 @@ export default function VanTayPage() {
                     biometricType === "face" ? "bg-red-100" : "bg-gray-100"
                   }`}
                 >
-                  <Camera className={`w-8 h-8 ${biometricType === "face" ? "text-red-600" : "text-gray-400"}`} />
+                  <Camera className={`w-8 h-8 ${biometricType === "face" ? "text-[color:var(--color-primary)]" : "text-gray-400"}`} />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-gray-800">Face ID</h3>
@@ -104,7 +104,7 @@ export default function VanTayPage() {
                     handleToggle()
                   }}
                   className={`w-12 h-7 rounded-full transition-colors ${
-                    isEnabled && biometricType === "face" ? "bg-red-600" : "bg-gray-300"
+                    isEnabled && biometricType === "face" ? "bg-[color:var(--color-primary)]" : "bg-gray-300"
                   }`}
                 >
                   <div

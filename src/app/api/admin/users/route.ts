@@ -28,7 +28,13 @@ export async function GET() {
   try {
     await verifyAdmin()
 
-    const usersSnapshot = await adminDb.collection("users").get()
+    const db = adminDb
+    if (!db) {
+      console.error("[API /admin/users GET] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
+
+    const usersSnapshot = await db.collection("users").get()
     const users = usersSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -49,6 +55,14 @@ export async function POST(req: NextRequest) {
   try {
     await verifyAdmin()
 
+    const db = adminDb
+    const auth = adminAuth
+
+    if (!db || !auth) {
+      console.error("[API /admin/users POST] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
+
     const body = await req.json()
     const { email, password, name, role = "user", mstList = [], phone } = body
 
@@ -58,14 +72,14 @@ export async function POST(req: NextRequest) {
 
     // Check if email exists
     try {
-      await adminAuth.getUserByEmail(email)
+      await auth.getUserByEmail(email)
       return NextResponse.json({ error: "Email đã tồn tại" }, { status: 400 })
     } catch {
       // User doesn't exist, continue
     }
 
     // Create Firebase Auth user
-    const firebaseUser = await adminAuth.createUser({
+    const firebaseUser = await auth.createUser({
       email,
       password,
       displayName: name,
@@ -73,7 +87,7 @@ export async function POST(req: NextRequest) {
 
     // Set admin claim if role is admin
     if (role === "admin") {
-      await adminAuth.setCustomUserClaims(firebaseUser.uid, { admin: true })
+      await auth.setCustomUserClaims(firebaseUser.uid, { admin: true })
     }
 
     // Create Firestore user document
@@ -88,7 +102,7 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date().toISOString(),
     }
 
-    const docRef = await adminDb.collection("users").add(userDoc)
+    const docRef = await db.collection("users").add(userDoc)
 
     return NextResponse.json({
       userId: docRef.id,

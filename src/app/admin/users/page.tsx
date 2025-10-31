@@ -142,7 +142,7 @@ export default function AdminUsersPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[color:var(--color-primary)] mx-auto"></div>
           <p className="mt-4 text-gray-600">Đang kiểm tra quyền...</p>
         </div>
       </div>
@@ -161,7 +161,7 @@ export default function AdminUsersPage() {
           </div>
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            className="flex items-center gap-2 px-4 py-2 bg-[color:var(--color-primary)] text-white rounded-lg hover:opacity-90"
           >
             <Plus size={20} />
             Tạo User Mới
@@ -177,7 +177,7 @@ export default function AdminUsersPage() {
               placeholder="Tìm kiếm user..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
             />
           </div>
         </div>
@@ -234,7 +234,7 @@ export default function AdminUsersPage() {
                       </button>
                       <button
                         onClick={() => handleDelete(user.id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded ml-2"
+                        className="p-2 text-[color:var(--color-primary)] hover:bg-red-50 rounded ml-2"
                       >
                         <Trash2 size={18} />
                       </button>
@@ -326,7 +326,7 @@ export default function AdminUsersPage() {
                         <button
                           type="button"
                           onClick={() => removeMst(idx)}
-                          className="text-red-600 hover:text-red-800"
+                          className="text-[color:var(--color-primary)] hover:opacity-90"
                         >
                           ×
                         </button>
@@ -344,7 +344,7 @@ export default function AdminUsersPage() {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                    className="flex-1 px-4 py-2 bg-[color:var(--color-primary)] text-white rounded-lg hover:opacity-90"
                   >
                     {editingUser ? "Cập nhật" : "Tạo"}
                   </button>
@@ -357,4 +357,3 @@ export default function AdminUsersPage() {
     </AdminLayout>
   )
 }
-

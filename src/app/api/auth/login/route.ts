@@ -8,12 +8,19 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const { mst, password, email } = body
+    const db = adminDb
+    const auth = adminAuth
+
+    if (!db || !auth) {
+      console.error("[API /auth/login] Firebase Admin chưa được khởi tạo")
+      return NextResponse.json({ error: "Firebase Admin chưa sẵn sàng" }, { status: 500 })
+    }
 
     // Admin login: email + password
     if (email && password) {
       try {
         // Find user in Firestore by email
-        const usersSnapshot = await adminDb.collection("users").where("email", "==", email.toLowerCase()).limit(1).get()
+        const usersSnapshot = await db.collection("users").where("email", "==", email.toLowerCase()).limit(1).get()
 
         if (usersSnapshot.empty) {
           return NextResponse.json({ error: "Sai email hoặc mật khẩu" }, { status: 401 })
@@ -34,20 +41,20 @@ export async function POST(req: NextRequest) {
         // Get or create Firebase Auth user
         let firebaseUid: string
         try {
-          const existingUser = await adminAuth.getUserByEmail(email.toLowerCase())
+          const existingUser = await auth.getUserByEmail(email.toLowerCase())
           firebaseUid = existingUser.uid
         } catch {
           // Create Firebase Auth user
-          const newUser = await adminAuth.createUser({
+          const newUser = await auth.createUser({
             email: email.toLowerCase(),
             password: password,
             displayName: userData.name,
           })
           firebaseUid = newUser.uid
-          await adminAuth.setCustomUserClaims(firebaseUid, { admin: true })
+          await auth.setCustomUserClaims(firebaseUid, { admin: true })
 
           // Update Firestore with uid
-          await adminDb.collection("users").doc(userDoc.id).update({ uid: firebaseUid })
+          await db.collection("users").doc(userDoc.id).update({ uid: firebaseUid })
         }
 
         // Create session data
@@ -75,7 +82,7 @@ export async function POST(req: NextRequest) {
       const normalizedMst = mst.trim()
 
       // Find user with this MST in Firestore
-      const usersSnapshot = await adminDb.collection("users").where("role", "==", "user").get()
+      const usersSnapshot = await db.collection("users").where("role", "==", "user").get()
       let targetUser: any = null
       let targetMst: string | null = null
 
@@ -91,20 +98,22 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      if (!targetUser) {
+      if (!targetUser || !targetMst) {
         return NextResponse.json({ error: "Sai MST hoặc mật khẩu" }, { status: 401 })
       }
+
+      const resolvedMst = targetMst
 
       // Get or create Firebase Auth user for this MST
       const mstEmail = `${normalizedMst}@mst.local`
       let firebaseUid: string
 
       try {
-        const existingUser = await adminAuth.getUserByEmail(mstEmail)
+        const existingUser = await auth.getUserByEmail(mstEmail)
         firebaseUid = existingUser.uid
       } catch {
         // Create new Firebase Auth user
-        const newUser = await adminAuth.createUser({
+        const newUser = await auth.createUser({
           email: mstEmail,
           password: password,
           displayName: targetUser.name || normalizedMst,
@@ -112,11 +121,11 @@ export async function POST(req: NextRequest) {
         firebaseUid = newUser.uid
 
         // Update Firestore user doc with uid
-        await adminDb.collection("users").doc(targetUser.id).update({ uid: firebaseUid })
+        await db.collection("users").doc(targetUser.id).update({ uid: firebaseUid })
       }
 
       // Create session data
-      const sessionData = { uid: firebaseUid, mst: targetMst, email: mstEmail, admin: false }
+      const sessionData = { uid: firebaseUid, mst: resolvedMst, email: mstEmail, admin: false }
 
       // Set cookie HttpOnly
       const cookieStore = await cookies()
@@ -129,7 +138,7 @@ export async function POST(req: NextRequest) {
       })
 
       // Also set MST in separate cookie for easy access
-      cookieStore.set("etax_mst", targetMst, {
+      cookieStore.set("etax_mst", resolvedMst, {
         httpOnly: false, // Can be read by client
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",

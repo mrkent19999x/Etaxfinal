@@ -116,7 +116,7 @@ export default function ChiTietNghiaVuThuePage() {
 
           {/* Action Buttons */}
           <div className="space-y-4">
-            <button className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 rounded-xl transition-colors">
+            <button className="w-full bg-[color:var(--color-primary)] hover:opacity-90 text-white font-semibold py-4 rounded-xl transition-colors">
               Nộp thuế ngay
             </button>
             <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-4 rounded-xl transition-colors">

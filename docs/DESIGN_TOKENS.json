@@ -1,0 +1,24 @@
+{
+  "colors": {
+    "primary": "#C60000",
+    "surface": "#FFFFFF",
+    "textPrimary": "#000000",
+    "textInverse": "#FFFFFF",
+    "mutedSurface": "#F4F3F5"
+  },
+  "typography": {
+    "title": { "size": 20, "weight": 600 },
+    "section": { "size": 18, "weight": 600 },
+    "body": { "size": 16, "weight": 400 },
+    "caption": { "size": 14, "weight": 400 }
+  },
+  "radii": {
+    "card": 16,
+    "button": 12
+  },
+  "spacing": {
+    "gridGap": 20,
+    "safePadding": 12
+  }
+}
+
