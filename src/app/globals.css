@@ -1,0 +1,317 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated color scheme for eTax Mobile - red header, dark blue accents, light backgrounds */
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.2 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0 0);
+  --primary: oklch(0.5 0.2 12);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.3 0.15 250);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.95 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.5 0.2 12);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.5 0.2 12);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.95 0 0);
+  --ring: oklch(0.5 0.2 12);
+  --chart-1: oklch(0.5 0.2 12);
+  --chart-2: oklch(0.3 0.15 250);
+  --chart-3: oklch(0.6 0.1 200);
+  --chart-4: oklch(0.7 0.1 100);
+  --chart-5: oklch(0.4 0.15 50);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.98 0 0);
+  --sidebar-foreground: oklch(0.2 0 0);
+  --sidebar-primary: oklch(0.5 0.2 12);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.3 0.15 250);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.9 0 0);
+  --sidebar-ring: oklch(0.5 0.2 12);
+
+  /* Added eTax specific colors */
+  --etax-red: #dc143c;
+  --etax-header: #8f1015;
+  --etax-dark-blue: #1a2a3a;
+  --etax-light-gray: #f5f5f5;
+}
+
+.dark {
+  --background: oklch(0.15 0 0);
+  --foreground: oklch(0.95 0 0);
+  --card: oklch(0.2 0 0);
+  --card-foreground: oklch(0.95 0 0);
+  --popover: oklch(0.2 0 0);
+  --popover-foreground: oklch(0.95 0 0);
+  --primary: oklch(0.5 0.2 12);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.3 0.15 250);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.3 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(0.5 0.2 12);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.5 0.2 12);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.3 0 0);
+  --input: oklch(0.25 0 0);
+  --ring: oklch(0.5 0.2 12);
+  --chart-1: oklch(0.5 0.2 12);
+  --chart-2: oklch(0.3 0.15 250);
+  --chart-3: oklch(0.6 0.1 200);
+  --chart-4: oklch(0.7 0.1 100);
+  --chart-5: oklch(0.4 0.15 50);
+  --sidebar: oklch(0.15 0 0);
+  --sidebar-foreground: oklch(0.95 0 0);
+  --sidebar-primary: oklch(0.5 0.2 12);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.3 0.15 250);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.3 0 0);
+  --sidebar-ring: oklch(0.5 0.2 12);
+}
+
+@theme inline {
+  --font-sans: "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* Custom scrollbar hide for mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+
+html,
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100%;
+  min-height: 100dvh;
+  width: 100%;
+  background: #000 !important;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation; /* CHẶN ZOOM HOÀN TOÀN trên mobile */
+  -ms-touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  min-height: inherit;
+  overflow-x: hidden;
+  overflow-y: auto;
+  touch-action: manipulation; /* CHẶN ZOOM HOÀN TOÀN */
+  -ms-touch-action: manipulation;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Phone Frame Structure - matches project gốc */
+.phone-frame {
+  width: 100% !important;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #f5f5f5;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-radius: 0;
+  margin: 0 !important;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+/* Desktop Responsive - matches project gốc */
+@media (min-width: 768px) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2c5aa0 0%, #1e3c72 100%) !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  
+  .phone-frame {
+    border-radius: 30px;
+    margin: 32px auto !important;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    width: 414px !important;
+    max-width: 414px !important;
+    background: #ffffff !important;
+  }
+  
+  .phone-frame .header {
+    border-radius: 30px 30px 0 0;
+  }
+}
+
+/* iOS fallback for safe areas - Removed padding to allow full screen */
+@supports (-webkit-touch-callout: none) {
+  .phone-frame {
+    /* Safe area handled by individual page headers */
+  }
+}
+
+.full-viewport {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100lvh;
+  min-height: 100dvh;
+}
+
+.etax-header {
+  background-color: var(--etax-header, #8f1015);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Utility: safe area top padding for headers on devices with notch */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+@layer utilities {
+  .min-h-screen {
+    min-height: 100vh !important;
+    min-height: 100svh !important;
+    min-height: 100lvh !important;
+    min-height: 100dvh !important;
+  }
+
+  .h-screen {
+    height: 100vh !important;
+    height: 100svh !important;
+    height: 100lvh !important;
+    height: 100dvh !important;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* CHẶN ZOOM TRÊN MOBILE - BẮT BUỘC */
+* {
+  touch-action: manipulation !important;
+  -ms-touch-action: manipulation !important;
+}
+
+input, button, a, select, textarea {
+  touch-action: manipulation !important;
+  -ms-touch-action: manipulation !important;
+}
+
+/* Chặn double-tap zoom trên iOS */
+@media screen and (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+}
