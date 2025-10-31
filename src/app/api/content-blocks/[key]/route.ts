@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from "next/server"
 
 import { adminDb } from "@/lib/firebase-admin"
 
-export async function GET(_: NextRequest, { params }: { params: { key: string } }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ key: string }> }) {
   try {
+    const { key } = await params
     if (!adminDb) {
       return NextResponse.json({ error: "Firebase Admin chưa được khởi tạo" }, { status: 500 })
     }
     const snapshot = await adminDb
       .collection("contentBlocks")
-      .where("key", "==", params.key)
+      .where("key", "==", key)
       .limit(1)
       .get()
 

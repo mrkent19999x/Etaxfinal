@@ -1,7 +1,11 @@
 import { initializeApp, getApps, cert, type App } from "firebase-admin/app"
 import { getAuth, type Auth } from "firebase-admin/auth"
 import { getFirestore, type Firestore } from "firebase-admin/firestore"
-import { getStorage, type Storage, type Bucket } from "firebase-admin/storage"
+import { getStorage, type Storage } from "firebase-admin/storage"
+import { readFileSync } from "fs"
+import { resolve } from "path"
+
+type Bucket = ReturnType<Storage["bucket"]>
 
 let adminApp: App | undefined
 let adminAuth: Auth | undefined
@@ -11,11 +15,14 @@ let adminBucket: Bucket | undefined
 
 if (typeof window === "undefined") {
   if (getApps().length === 0) {
-    const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
-      ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-      : process.env.FIREBASE_SERVICE_ACCOUNT_PATH
-        ? require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH)
-        : undefined
+    let serviceAccount: any = undefined
+    
+    if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+    } else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
+      const path = resolve(process.cwd(), process.env.FIREBASE_SERVICE_ACCOUNT_PATH)
+      serviceAccount = JSON.parse(readFileSync(path, "utf8"))
+    }
 
     if (!serviceAccount) {
       console.warn(

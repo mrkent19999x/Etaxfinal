@@ -20,12 +20,12 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams
     const screenId = searchParams.get("screenId") ?? undefined
 
-    let query = adminDb.collection("fieldDefinitions")
+    let query: any = adminDb.collection("fieldDefinitions")
     if (screenId) {
       query = query.where("screenId", "==", screenId)
     }
     const snapshot = await query.orderBy("screenId").orderBy("order").get()
-    const definitions = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    const definitions = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
     return NextResponse.json({ definitions })
   } catch (error: any) {
     const message = error?.message ?? "Lỗi server"

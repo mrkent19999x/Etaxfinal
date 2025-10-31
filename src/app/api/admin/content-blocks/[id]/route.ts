@@ -7,14 +7,15 @@ import { contentBlockSchema } from "@/lib/content-service"
 
 const updateSchema = contentBlockSchema.partial()
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     await requireAdminSession()
     if (!adminDb) {
       return NextResponse.json({ error: "Firebase Admin chưa được khởi tạo" }, { status: 500 })
     }
 
-    const doc = await adminDb.collection("contentBlocks").doc(params.id).get()
+    const doc = await adminDb.collection("contentBlocks").doc(id).get()
     if (!doc.exists) {
       return NextResponse.json({ error: "Không tìm thấy content block" }, { status: 404 })
     }
@@ -27,14 +28,15 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     await requireAdminSession()
     if (!adminDb) {
       return NextResponse.json({ error: "Firebase Admin chưa được khởi tạo" }, { status: 500 })
     }
 
-    const docRef = adminDb.collection("contentBlocks").doc(params.id)
+    const docRef = adminDb.collection("contentBlocks").doc(id)
     const snapshot = await docRef.get()
     if (!snapshot.exists) {
       return NextResponse.json({ error: "Không tìm thấy content block" }, { status: 404 })
@@ -58,14 +60,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     await requireAdminSession()
     if (!adminDb) {
       return NextResponse.json({ error: "Firebase Admin chưa được khởi tạo" }, { status: 500 })
     }
 
-    await adminDb.collection("contentBlocks").doc(params.id).delete()
+    await adminDb.collection("contentBlocks").doc(id).delete()
     return NextResponse.json({ success: true })
   } catch (error: any) {
     const message = error?.message ?? "Lỗi server"

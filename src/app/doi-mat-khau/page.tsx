@@ -137,7 +137,7 @@ export default function DoiMatKhauPage() {
                     placeholder="Nhập lại mật khẩu mới"
                     autoComplete="new-password"
                     aria-required="true"
-                    aria-invalid={confirmPassword && newPassword !== confirmPassword}
+                    aria-invalid={confirmPassword ? newPassword !== confirmPassword : false}
                     aria-describedby={confirmPassword && newPassword !== confirmPassword ? "password-mismatch-error" : undefined}
                   />
                   <button

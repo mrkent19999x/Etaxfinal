@@ -18,10 +18,19 @@ const contentSchema = z.object({
 
 const initialForm = { key: "", title: "", body: "", style: "{}", metadata: "{}" }
 
+type FormData = {
+  id?: string
+  key: string
+  title: string
+  body: string
+  style: string
+  metadata: string
+}
+
 export default function AdminContentPage() {
   const { isAdmin, isLoading } = useRequireAdmin()
   const [blocks, setBlocks] = useState<any[]>([])
-  const [form, setForm] = useState(initialForm)
+  const [form, setForm] = useState<FormData>(initialForm)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<string>("")
 

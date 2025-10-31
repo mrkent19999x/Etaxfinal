@@ -11,14 +11,15 @@ const updateSchema = pdfTemplateSchema.partial().extend({
   fileName: z.string().optional(),
 })
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     await requireAdminSession()
     if (!adminDb) {
       return NextResponse.json({ error: "Firebase Admin chưa được khởi tạo" }, { status: 500 })
     }
 
-    const doc = await adminDb.collection("pdfTemplates").doc(params.id).get()
+    const doc = await adminDb.collection("pdfTemplates").doc(id).get()
     if (!doc.exists) {
       return NextResponse.json({ error: "Không tìm thấy template" }, { status: 404 })
     }
@@ -31,15 +32,16 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     await requireAdminSession()
 
     if (!adminDb || !adminBucket) {
       return NextResponse.json({ error: "Firebase Admin chưa được khởi tạo" }, { status: 500 })
     }
 
-    const docRef = adminDb.collection("pdfTemplates").doc(params.id)
+    const docRef = adminDb.collection("pdfTemplates").doc(id)
     const snapshot = await docRef.get()
     if (!snapshot.exists) {
       return NextResponse.json({ error: "Không tìm thấy template" }, { status: 404 })
@@ -91,15 +93,16 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     await requireAdminSession()
 
     if (!adminDb) {
       return NextResponse.json({ error: "Firebase Admin chưa được khởi tạo" }, { status: 500 })
     }
 
-    const docRef = adminDb.collection("pdfTemplates").doc(params.id)
+    const docRef = adminDb.collection("pdfTemplates").doc(id)
     const snapshot = await docRef.get()
 
     if (!snapshot.exists) {

@@ -44,7 +44,9 @@ export async function getContentBlockByKey(key: string): Promise<ContentBlock | 
   const snapshot = await adminDb.collection("contentBlocks").where("key", "==", key).limit(1).get()
   if (snapshot.empty) return null
   const doc = snapshot.docs[0]
-  return { id: doc.id, ...(doc.data() as ContentBlock) }
+  const data = doc.data() as ContentBlock
+  const { id: _, ...rest } = data
+  return { ...rest, id: doc.id }
 }
 
 export async function getFieldDefinitions(screenId: string): Promise<FieldDefinition[]> {
@@ -54,5 +56,9 @@ export async function getFieldDefinitions(screenId: string): Promise<FieldDefini
     .where("screenId", "==", screenId)
     .orderBy("order", "asc")
     .get()
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() as FieldDefinition) }))
+  return snapshot.docs.map((doc) => {
+    const data = doc.data() as FieldDefinition
+    const { id: _, ...rest } = data
+    return { ...rest, id: doc.id }
+  })
 }

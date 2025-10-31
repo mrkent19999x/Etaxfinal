@@ -24,6 +24,41 @@ export default function EtaxMobileHome() {
     }
   }, [session.loading, session.isAuthenticated, router])
 
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch("/api/content-blocks/home.frequentFeatures")
+        if (res.ok) {
+          const data = await res.json()
+          if (!cancelled && data.content) {
+            if (data.content.title) setFrequentTitle(data.content.title)
+          }
+        }
+      } catch (error) {
+        console.warn("Không thể tải content block home.frequentFeatures", error)
+      }
+    })()
+
+    ;(async () => {
+      try {
+        const res = await fetch("/api/content-blocks/home.services")
+        if (res.ok) {
+          const data = await res.json()
+          if (!cancelled && data.content?.title) {
+            setServicesTitle(data.content.title)
+          }
+        }
+      } catch (error) {
+        console.warn("Không thể tải content block home.services", error)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   if (session.loading || !session.isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -181,37 +216,3 @@ export default function EtaxMobileHome() {
     </div>
   )
 }
-  useEffect(() => {
-    let cancelled = false
-    ;(async () => {
-      try {
-        const res = await fetch("/api/content-blocks/home.frequentFeatures")
-        if (res.ok) {
-          const data = await res.json()
-          if (!cancelled && data.content) {
-            if (data.content.title) setFrequentTitle(data.content.title)
-          }
-        }
-      } catch (error) {
-        console.warn("Không thể tải content block home.frequentFeatures", error)
-      }
-    })()
-
-    ;(async () => {
-      try {
-        const res = await fetch("/api/content-blocks/home.services")
-        if (res.ok) {
-          const data = await res.json()
-          if (!cancelled && data.content?.title) {
-            setServicesTitle(data.content.title)
-          }
-        }
-      } catch (error) {
-        console.warn("Không thể tải content block home.services", error)
-      }
-    })()
-
-    return () => {
-      cancelled = true
-    }
-  }, [])

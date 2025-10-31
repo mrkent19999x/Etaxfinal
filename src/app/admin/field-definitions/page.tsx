@@ -32,10 +32,23 @@ const initialForm = {
   order: 0,
 }
 
+type FormData = {
+  id?: string
+  screenId: string
+  fieldId: string
+  label: string
+  placeholder: string
+  type: "text" | "number" | "date" | "currency" | "select" | "textarea"
+  options: string
+  validation: string
+  style: string
+  order: number
+}
+
 export default function AdminFieldDefinitionPage() {
   const { isAdmin, isLoading } = useRequireAdmin()
   const [definitions, setDefinitions] = useState<any[]>([])
-  const [form, setForm] = useState(initialForm)
+  const [form, setForm] = useState<FormData>(initialForm)
   const [status, setStatus] = useState<string>("")
   const [loading, setLoading] = useState(false)
   const [filterScreen, setFilterScreen] = useState<string>("")
@@ -217,7 +230,7 @@ export default function AdminFieldDefinitionPage() {
                 <select
                   className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
                   value={form.type}
-                  onChange={(e) => setForm((prev) => ({ ...prev, type: e.target.value }))}
+                  onChange={(e) => setForm((prev) => ({ ...prev, type: e.target.value as FormData["type"] }))}
                 >
                   <option value="text">Text</option>
                   <option value="number">Number</option>
