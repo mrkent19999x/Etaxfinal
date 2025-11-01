@@ -52,6 +52,16 @@ const DEFAULT_DATA: StoredData = {
       updatedAt: new Date().toISOString(),
     },
     {
+      id: "admin-2",
+      name: "Phúc Trần",
+      email: "phuctran123@gmail.com",
+      password: "123456",
+      role: "admin",
+      mstList: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
       id: "user-1",
       name: "Tử Xuân Chiến",
       email: "user1@etax.local",
