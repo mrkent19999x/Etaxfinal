@@ -46,19 +46,20 @@ export default function LoginPage() {
 
   return (
     <div
-      className="phone-frame relative flex flex-col"
+      className="phone-frame relative flex flex-col overflow-hidden"
       style={{
         backgroundImage: "url('/assets/bglogin.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        height: "100dvh",
+        height: "100svh",
         minHeight: "100svh",
+        maxHeight: "100svh",
         backgroundColor: "#103b90"
       }}
     >
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 pb-24">
+      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 pb-36">
         {/* Logo */}
         <div className="mb-10 flex flex-col items-center">
           <Image
