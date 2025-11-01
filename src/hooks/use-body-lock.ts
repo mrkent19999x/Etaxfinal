@@ -18,13 +18,39 @@ export function useBodyLock(lock: boolean = true) {
     const previousBodyLeft = body.style.left
     const previousBodyWidth = body.style.width
     const previousBodyOverscroll = body.style.overscrollBehavior
+    const previousBodyAppHeight = body.style.getPropertyValue("--app-height")
 
     const previousRootOverflow = root.style.overflow
     const previousRootOverscroll = root.style.overscrollBehavior
     const previousRootHeight = root.style.height
+    const previousRootAppHeight = root.style.getPropertyValue("--app-height")
 
     const scrollX = window.scrollX
     const scrollY = window.scrollY
+    let rafId = 0
+
+    const applyAppHeight = () => {
+      const viewport = window.visualViewport
+      const height = viewport?.height ?? window.innerHeight
+      root.style.setProperty("--app-height", `${height}px`)
+      body.style.setProperty("--app-height", `${height}px`)
+    }
+
+    const scheduleAppHeight = () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId)
+      }
+      rafId = window.requestAnimationFrame(applyAppHeight)
+    }
+
+    scheduleAppHeight()
+
+    window.addEventListener("resize", scheduleAppHeight)
+    window.addEventListener("orientationchange", scheduleAppHeight)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", scheduleAppHeight)
+      window.visualViewport.addEventListener("scroll", scheduleAppHeight)
+    }
 
     body.style.setProperty("overflow", "hidden", "important")
     body.style.height = "100%"
@@ -46,13 +72,32 @@ export function useBodyLock(lock: boolean = true) {
       body.style.left = previousBodyLeft
       body.style.width = previousBodyWidth
       body.style.overscrollBehavior = previousBodyOverscroll
+      if (previousBodyAppHeight) {
+        body.style.setProperty("--app-height", previousBodyAppHeight)
+      } else {
+        body.style.removeProperty("--app-height")
+      }
 
       root.style.overflow = previousRootOverflow
       root.style.overscrollBehavior = previousRootOverscroll
       root.style.height = previousRootHeight
+      if (previousRootAppHeight) {
+        root.style.setProperty("--app-height", previousRootAppHeight)
+      } else {
+        root.style.removeProperty("--app-height")
+      }
+
+      window.removeEventListener("resize", scheduleAppHeight)
+      window.removeEventListener("orientationchange", scheduleAppHeight)
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", scheduleAppHeight)
+        window.visualViewport.removeEventListener("scroll", scheduleAppHeight)
+      }
+      if (rafId) {
+        window.cancelAnimationFrame(rafId)
+      }
 
       window.scrollTo(scrollX, scrollY)
     }
   }, [lock])
 }
-

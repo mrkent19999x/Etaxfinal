@@ -58,12 +58,13 @@ export default function LoginPage() {
       }}
     >
       {/* Content - scrollable nếu cần nhưng body vẫn bị khóa */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 pb-28 overflow-y-auto overscroll-contain" style={{ 
-        maxHeight: "100%", 
+      <div className="relative z-10 flex-1 flex flex-col px-6 overflow-y-auto overscroll-contain" style={{ 
+        paddingTop: "env(safe-area-inset-top, 0px)",
+        paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + 5.5rem)`, /* ~88px cho bottom nav + safe-area */
         WebkitOverflowScrolling: "touch",
         scrollbarWidth: "none",
         msOverflowStyle: "none",
-        paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + 7rem)` /* 112px + safe-area để không bị bottom nav che */
+        minHeight: 0 /* Cho phép flex-1 hoạt động đúng */
       }}>
         {/* Logo */}
         <div className="mb-10 flex flex-col items-center">
@@ -244,7 +245,7 @@ export default function LoginPage() {
       {/* Bottom Navigation Bar */}
       <nav
         className="absolute bottom-0 inset-x-0 flex items-center justify-around py-3 px-6"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) - 12px, 12px)" }}
         aria-label="Thanh điều hướng dưới cùng"
       >
         <button 
