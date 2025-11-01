@@ -20,6 +20,16 @@ export default function LoginPage() {
     }
   }, [session.loading, session.isAuthenticated, router])
 
+  // Khóa body scroll khi component mount (backup)
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    document.body.style.height = '100vh'
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.height = ''
+    }
+  }, [])
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
@@ -96,7 +106,7 @@ export default function LoginPage() {
                 placeholder="Mã số thuế"
                 value={mst}
                 onChange={(e) => setMst(e.target.value)}
-                className="flex-1 bg-transparent text-white text-base py-2 outline-none placeholder:text-white/90 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent rounded-sm"
+                className="flex-1 bg-transparent text-white text-base py-2 outline-none placeholder:text-white/90 rounded-sm"
                 autoComplete="username"
                 aria-required="true"
                 style={{ touchAction: 'manipulation' }}
@@ -125,7 +135,7 @@ export default function LoginPage() {
                 placeholder="Mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="flex-1 bg-transparent text-white text-base py-2 outline-none placeholder:text-white/90 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent rounded-sm"
+                className="flex-1 bg-transparent text-white text-base py-2 outline-none placeholder:text-white/90 rounded-sm"
                 autoComplete="current-password"
                 aria-required="true"
                 style={{ touchAction: 'manipulation' }}
@@ -194,13 +204,18 @@ export default function LoginPage() {
         {/* VNeID Login */}
         <div className="w-full mt-6">
           <button 
-            className="w-full flex items-center justify-between px-5 py-4 rounded-[18px] bg-white hover:bg-white/95 active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-white/30 focus:ring-offset-2 focus:ring-offset-transparent shadow-[0_6px_18px_rgba(0,0,0,0.18)]"
+            className="w-full flex items-center gap-1.5 px-5 py-4 rounded-[18px] bg-white hover:bg-white/95 active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-white/30 focus:ring-offset-2 focus:ring-offset-transparent shadow-[0_6px_18px_rgba(0,0,0,0.18)]"
             style={{ touchAction: 'manipulation' }}
             aria-label="Đăng nhập bằng tài khoản Định danh điện tử VNeID"
           >
-            <span className="text-[#111827] font-semibold text-[15px] leading-tight text-left">
-              Đăng nhập bằng tài khoản<br />Định danh điện tử
-            </span>
+            <div className="flex flex-col flex-1 text-center">
+              <span className="text-[#111827] font-semibold text-[16px] leading-tight">
+                Đăng nhập bằng tài khoản
+              </span>
+              <span className="text-[#111827] font-semibold text-[15px] leading-tight">
+                Định danh điện tử
+              </span>
+            </div>
             <Image
               src="/assets/vnid.webp"
               alt=""
@@ -213,14 +228,14 @@ export default function LoginPage() {
         </div>
 
         {/* Sign up Links */}
-        <div className="mt-8 text-center space-y-2">
-          <div className="text-sm text-white">
-            Bạn chưa có tài khoản?{" "}
+        <div className="mt-8 space-y-2">
+          <div className="flex justify-between items-center text-base text-white">
+            <span>Bạn chưa có tài khoản?</span>
             <a href="#" className="text-yellow-400 hover:text-yellow-300 font-semibold transition-colors">
               Đăng ký ngay
             </a>
           </div>
-          <div className="text-sm text-white mt-4">
+          <div className="text-base text-white mt-4 w-full">
             Người nước ngoài hoặc người Việt Nam sống ở nước ngoài không có số định danh cá nhân-chưa có mã số thuế?{" "}
             <a href="#" className="text-yellow-400 hover:text-yellow-300 font-semibold transition-colors">
               Đăng ký thuế ngay.
