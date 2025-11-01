@@ -1,24 +1,19 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState, Suspense, useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { useUserSession } from "@/hooks/use-user-session"
 import { useBodyLock } from "@/hooks/use-body-lock"
 
-export default function LoginPage() {
-  const router = useRouter()
-  const session = useUserSession()
-  const [mst, setMst] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+// Component riêng để dùng useSearchParams (cần Suspense)
+function ViewportDebugOverlay() {
   const searchParams = useSearchParams()
   const enableViewportDebug = useMemo(
     () => searchParams?.get("debug") === "viewport",
     [searchParams]
   )
+  
   const [viewportMetrics, setViewportMetrics] = useState<{
     innerHeight: number
     innerWidth: number
@@ -28,6 +23,70 @@ export default function LoginPage() {
     safeTop: number
     safeBottom: number
   } | null>(null)
+
+  useEffect(() => {
+    if (!enableViewportDebug || typeof window === "undefined") {
+      return
+    }
+
+    const updateMetrics = () => {
+      const root = document.documentElement
+      const body = document.body
+      const cs = getComputedStyle(root)
+      setViewportMetrics({
+        innerHeight: window.innerHeight,
+        innerWidth: window.innerWidth,
+        visualViewportHeight: window.visualViewport?.height ?? null,
+        visualViewportWidth: window.visualViewport?.width ?? null,
+        appHeight: cs.getPropertyValue("--app-height") || null,
+        safeTop: parseFloat(cs.getPropertyValue("padding-top")) || parseFloat(getComputedStyle(body).getPropertyValue("padding-top")) || 0,
+        safeBottom: parseFloat(cs.getPropertyValue("padding-bottom")) || parseFloat(getComputedStyle(body).getPropertyValue("padding-bottom")) || 0,
+      })
+    }
+
+    updateMetrics()
+    window.addEventListener("resize", updateMetrics)
+    window.addEventListener("orientationchange", updateMetrics)
+    window.visualViewport?.addEventListener("resize", updateMetrics)
+    window.visualViewport?.addEventListener("scroll", updateMetrics)
+
+    return () => {
+      window.removeEventListener("resize", updateMetrics)
+      window.removeEventListener("orientationchange", updateMetrics)
+      window.visualViewport?.removeEventListener("resize", updateMetrics)
+      window.visualViewport?.removeEventListener("scroll", updateMetrics)
+    }
+  }, [enableViewportDebug])
+
+  if (!enableViewportDebug || !viewportMetrics) {
+    return null
+  }
+
+  return (
+    <div className="absolute top-3 left-3 right-3 z-20 bg-black/70 text-white text-xs leading-relaxed p-3 rounded-lg space-y-1">
+      <div className="font-semibold text-sm">Viewport debug</div>
+      <div>innerHeight: {viewportMetrics.innerHeight}px</div>
+      <div>innerWidth: {viewportMetrics.innerWidth}px</div>
+      <div>visualViewport.height: {viewportMetrics.visualViewportHeight ?? "null"}px</div>
+      <div>visualViewport.width: {viewportMetrics.visualViewportWidth ?? "null"}px</div>
+      <div>--app-height: {viewportMetrics.appHeight ?? "(unset)"}</div>
+      <div>safe-top: {viewportMetrics.safeTop}px</div>
+      <div>safe-bottom: {viewportMetrics.safeBottom}px</div>
+      <div className="text-[11px] text-white/70">
+        (Thêm `?debug=viewport` vào URL để bật/ẩn bảng này)
+      </div>
+    </div>
+  )
+}
+
+export default function LoginPage() {
+  const router = useRouter()
+  const session = useUserSession()
+  const [mst, setMst] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   // Khóa body scroll hoàn toàn khi component mount
   useBodyLock(true)
@@ -115,21 +174,9 @@ export default function LoginPage() {
         bottom: 0
       }}
     >
-      {enableViewportDebug && viewportMetrics && (
-        <div className="absolute top-3 left-3 right-3 z-20 bg-black/70 text-white text-xs leading-relaxed p-3 rounded-lg space-y-1">
-          <div className="font-semibold text-sm">Viewport debug</div>
-          <div>innerHeight: {viewportMetrics.innerHeight}px</div>
-          <div>innerWidth: {viewportMetrics.innerWidth}px</div>
-          <div>visualViewport.height: {viewportMetrics.visualViewportHeight ?? "null"}px</div>
-          <div>visualViewport.width: {viewportMetrics.visualViewportWidth ?? "null"}px</div>
-          <div>--app-height: {viewportMetrics.appHeight ?? "(unset)"}</div>
-          <div>safe-top: {viewportMetrics.safeTop}px</div>
-          <div>safe-bottom: {viewportMetrics.safeBottom}px</div>
-          <div className="text-[11px] text-white/70">
-            (Thêm `?debug=viewport` vào URL để bật/ẩn bảng này)
-          </div>
-        </div>
-      )}
+      <Suspense fallback={null}>
+        <ViewportDebugOverlay />
+      </Suspense>
 
       {/* Content - không scroll, giữ nguyên layout logo ở giữa */}
       <div 
