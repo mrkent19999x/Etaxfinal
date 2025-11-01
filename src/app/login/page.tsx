@@ -119,40 +119,6 @@ export default function LoginPage() {
     }
   }
 
-  useEffect(() => {
-    if (!enableViewportDebug || typeof window === "undefined") {
-      return
-    }
-
-    const updateMetrics = () => {
-      const root = document.documentElement
-      const body = document.body
-      const cs = getComputedStyle(root)
-      setViewportMetrics({
-        innerHeight: window.innerHeight,
-        innerWidth: window.innerWidth,
-        visualViewportHeight: window.visualViewport?.height ?? null,
-        visualViewportWidth: window.visualViewport?.width ?? null,
-        appHeight: cs.getPropertyValue("--app-height") || null,
-        safeTop: parseFloat(cs.getPropertyValue("padding-top")) || parseFloat(getComputedStyle(body).getPropertyValue("padding-top")) || 0,
-        safeBottom: parseFloat(cs.getPropertyValue("padding-bottom")) || parseFloat(getComputedStyle(body).getPropertyValue("padding-bottom")) || 0,
-      })
-    }
-
-    updateMetrics()
-    window.addEventListener("resize", updateMetrics)
-    window.addEventListener("orientationchange", updateMetrics)
-    window.visualViewport?.addEventListener("resize", updateMetrics)
-    window.visualViewport?.addEventListener("scroll", updateMetrics)
-
-    return () => {
-      window.removeEventListener("resize", updateMetrics)
-      window.removeEventListener("orientationchange", updateMetrics)
-      window.visualViewport?.removeEventListener("resize", updateMetrics)
-      window.visualViewport?.removeEventListener("scroll", updateMetrics)
-    }
-  }, [enableViewportDebug])
-
   return (
     <div
       className="phone-frame relative flex flex-col overflow-hidden"
