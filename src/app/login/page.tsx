@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { useUserSession } from "@/hooks/use-user-session"
+import { useBodyLock } from "@/hooks/use-body-lock"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -14,21 +15,14 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
+  // Khóa body scroll hoàn toàn khi component mount
+  useBodyLock(true)
+
   useEffect(() => {
     if (!session.loading && session.isAuthenticated) {
       router.replace("/")
     }
   }, [session.loading, session.isAuthenticated, router])
-
-  // Khóa body scroll khi component mount (backup)
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    document.body.style.height = '100vh'
-    return () => {
-      document.body.style.overflow = ''
-      document.body.style.height = ''
-    }
-  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -66,8 +60,13 @@ export default function LoginPage() {
         backgroundColor: "#103b90"
       }}
     >
-      {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 pb-36">
+      {/* Content - scrollable nếu cần nhưng body vẫn bị khóa */}
+      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 pb-32 overflow-y-auto overscroll-contain" style={{ 
+        maxHeight: "100%", 
+        WebkitOverflowScrolling: "touch",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none"
+      }}>
         {/* Logo */}
         <div className="mb-10 flex flex-col items-center">
           <Image
