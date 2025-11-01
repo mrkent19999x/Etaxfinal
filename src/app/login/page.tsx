@@ -61,11 +61,12 @@ export default function LoginPage() {
       }}
     >
       {/* Content - scrollable nếu cần nhưng body vẫn bị khóa */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 pb-32 overflow-y-auto overscroll-contain" style={{ 
+      <div className="relative z-10 flex-1 flex flex-col px-6 pb-28 overflow-y-auto overscroll-contain" style={{ 
         maxHeight: "100%", 
         WebkitOverflowScrolling: "touch",
         scrollbarWidth: "none",
-        msOverflowStyle: "none"
+        msOverflowStyle: "none",
+        paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + 7rem)` /* 112px + safe-area để không bị bottom nav che */
       }}>
         {/* Logo */}
         <div className="mb-10 flex flex-col items-center">

@@ -236,6 +236,7 @@ html:has(.phone-frame) {
   right: 0 !important;
   overscroll-behavior: none !important;
   -webkit-overflow-scrolling: none !important;
+  background: #103b90 !important; /* Fix nền đen - match với phone-frame background */
 }
 
 /* Cho phép scroll trong container con của phone-frame nhưng body vẫn bị khóa */
@@ -305,12 +306,7 @@ html:has(.phone-frame) {
   }
 }
 
-/* iOS fallback for safe areas - Removed padding to allow full screen */
-@supports (-webkit-touch-callout: none) {
-  .phone-frame {
-    /* Safe area handled by individual page headers */
-  }
-}
+/* iOS fallback for safe areas - Safe area handled by individual page headers */
 
 .full-viewport {
   width: 100%;
