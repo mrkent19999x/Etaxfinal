@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { useUserSession } from "@/hooks/use-user-session"
 import { useBodyLock } from "@/hooks/use-body-lock"
@@ -14,6 +14,20 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const searchParams = useSearchParams()
+  const enableViewportDebug = useMemo(
+    () => searchParams?.get("debug") === "viewport",
+    [searchParams]
+  )
+  const [viewportMetrics, setViewportMetrics] = useState<{
+    innerHeight: number
+    innerWidth: number
+    visualViewportHeight: number | null
+    visualViewportWidth: number | null
+    appHeight: string | null
+    safeTop: number
+    safeBottom: number
+  } | null>(null)
 
   // Khóa body scroll hoàn toàn khi component mount
   useBodyLock(true)
@@ -46,6 +60,40 @@ export default function LoginPage() {
     }
   }
 
+  useEffect(() => {
+    if (!enableViewportDebug || typeof window === "undefined") {
+      return
+    }
+
+    const updateMetrics = () => {
+      const root = document.documentElement
+      const body = document.body
+      const cs = getComputedStyle(root)
+      setViewportMetrics({
+        innerHeight: window.innerHeight,
+        innerWidth: window.innerWidth,
+        visualViewportHeight: window.visualViewport?.height ?? null,
+        visualViewportWidth: window.visualViewport?.width ?? null,
+        appHeight: cs.getPropertyValue("--app-height") || null,
+        safeTop: parseFloat(cs.getPropertyValue("padding-top")) || parseFloat(getComputedStyle(body).getPropertyValue("padding-top")) || 0,
+        safeBottom: parseFloat(cs.getPropertyValue("padding-bottom")) || parseFloat(getComputedStyle(body).getPropertyValue("padding-bottom")) || 0,
+      })
+    }
+
+    updateMetrics()
+    window.addEventListener("resize", updateMetrics)
+    window.addEventListener("orientationchange", updateMetrics)
+    window.visualViewport?.addEventListener("resize", updateMetrics)
+    window.visualViewport?.addEventListener("scroll", updateMetrics)
+
+    return () => {
+      window.removeEventListener("resize", updateMetrics)
+      window.removeEventListener("orientationchange", updateMetrics)
+      window.visualViewport?.removeEventListener("resize", updateMetrics)
+      window.visualViewport?.removeEventListener("scroll", updateMetrics)
+    }
+  }, [enableViewportDebug])
+
   return (
     <div
       className="phone-frame relative flex flex-col overflow-hidden"
@@ -57,6 +105,22 @@ export default function LoginPage() {
         backgroundColor: "#103b90"
       }}
     >
+      {enableViewportDebug && viewportMetrics && (
+        <div className="absolute top-3 left-3 right-3 z-20 bg-black/70 text-white text-xs leading-relaxed p-3 rounded-lg space-y-1">
+          <div className="font-semibold text-sm">Viewport debug</div>
+          <div>innerHeight: {viewportMetrics.innerHeight}px</div>
+          <div>innerWidth: {viewportMetrics.innerWidth}px</div>
+          <div>visualViewport.height: {viewportMetrics.visualViewportHeight ?? "null"}px</div>
+          <div>visualViewport.width: {viewportMetrics.visualViewportWidth ?? "null"}px</div>
+          <div>--app-height: {viewportMetrics.appHeight ?? "(unset)"}</div>
+          <div>safe-top: {viewportMetrics.safeTop}px</div>
+          <div>safe-bottom: {viewportMetrics.safeBottom}px</div>
+          <div className="text-[11px] text-white/70">
+            (Thêm `?debug=viewport` vào URL để bật/ẩn bảng này)
+          </div>
+        </div>
+      )}
+
       {/* Content - scrollable nếu cần nhưng body vẫn bị khóa */}
       <div className="relative z-10 flex-1 flex flex-col px-6 overflow-y-auto overscroll-contain" style={{ 
         paddingTop: "env(safe-area-inset-top, 0px)",
@@ -245,7 +309,7 @@ export default function LoginPage() {
       {/* Bottom Navigation Bar */}
       <nav
         className="absolute bottom-0 inset-x-0 flex items-center justify-around py-3 px-6"
-        style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) - 24px, 8px)" }}
+        style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4px)" }}
         aria-label="Thanh điều hướng dưới cùng"
       >
         <button 
