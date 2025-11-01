@@ -54,9 +54,6 @@ export default function LoginPage() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        height: "100svh",
-        minHeight: "100svh",
-        maxHeight: "100svh",
         backgroundColor: "#103b90"
       }}
     >
