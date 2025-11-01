@@ -257,7 +257,7 @@ body {
     box-shadow: 0 10px 50px rgba(0,0,0,0.3);
     width: 414px !important;
     max-width: 414px !important;
-    background: #ffffff !important;
+    background: transparent !important; /* giữ nguyên background image cho desktop preview */
   }
   
   .phone-frame .header {
