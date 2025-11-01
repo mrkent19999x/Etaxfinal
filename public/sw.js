@@ -34,6 +34,24 @@ self.addEventListener("fetch", (event) => {
 
   const request = event.request
 
+  // Always try network first for navigations (HTML) to avoid stale shells
+  if (request.mode === "navigate") {
+    event.respondWith(
+      (async () => {
+        try {
+          const fresh = await fetch(request)
+          return fresh
+        } catch {
+          const cache = await caches.open(CACHE_NAME)
+          const cachedPage = await cache.match(request)
+          const offline = await cache.match("/offline.html")
+          return cachedPage || offline || Response.error()
+        }
+      })(),
+    )
+    return
+  }
+
   // Strategy: stale-while-revalidate for GET requests
   event.respondWith(
     (async () => {

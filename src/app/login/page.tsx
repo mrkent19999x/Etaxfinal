@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { useBodyLock } from "@/hooks/use-body-lock"
 import { useUserSession } from "@/hooks/use-user-session"
 
 export default function LoginPage() {
@@ -14,7 +13,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  useBodyLock(true)
 
   useEffect(() => {
     if (!session.loading && session.isAuthenticated) {
@@ -135,7 +133,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="w-[40px] h-[40px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm bg-white/5 hover:bg-white/10 transition-colors"
+                className="w-[38px] h-[38px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white/40 rounded-sm transition-colors"
                 aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                 style={{ touchAction: 'manipulation' }}
               >
@@ -196,11 +194,11 @@ export default function LoginPage() {
         {/* VNeID Login */}
         <div className="w-full mt-6">
           <button 
-            className="w-full flex items-center justify-between px-5 py-4 rounded-[18px] bg-white/95 hover:bg-white active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent shadow-[0_6px_18px_rgba(0,0,0,0.25)]"
+            className="w-full flex items-center justify-between px-5 py-4 rounded-[18px] bg-white hover:bg-white/95 active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-white/30 focus:ring-offset-2 focus:ring-offset-transparent shadow-[0_6px_18px_rgba(0,0,0,0.18)]"
             style={{ touchAction: 'manipulation' }}
             aria-label="Đăng nhập bằng tài khoản Định danh điện tử VNeID"
           >
-            <span className="text-[#103b90] font-semibold text-[15px] leading-tight text-left">
+            <span className="text-[#111827] font-semibold text-[15px] leading-tight text-left">
               Đăng nhập bằng tài khoản<br />Định danh điện tử
             </span>
             <Image
