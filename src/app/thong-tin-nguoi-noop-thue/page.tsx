@@ -25,8 +25,8 @@ export default function ThongTinNguoiNopThuePage() {
   const router = useRouter()
   const session = useUserSession()
   const userInfo = useMemo<UserInfo>(() => ({
-    mst: session.mst ?? "00109202830",
-    fullName: session.name ?? "TỪ XUÂN CHIẾN",
+    mst: session.mst || "",
+    fullName: session.name || "",
     companyName: "CÔNG TY TNHH ABC",
     address: "số 8 hêm, Phương Minh Khai(Hết hiệu lực), TP Hà Nội",
     taxOffice: "Thuế cơ số 3 thành phố Hà Nội",

@@ -13,8 +13,8 @@ export default function ChiTietNghiaVuThuePage() {
   const params = useParams()
   const session = useUserSession()
   const userDetails = useMemo(() => ({
-    mst: session.mst ?? "00109202830",
-    fullName: session.name ?? "TỪ XUÂN CHIẾN",
+    mst: session.mst || "",
+    fullName: session.name || "",
   }), [session.mst, session.name])
 
   // Mock data - sẽ thay bằng dữ liệu thực

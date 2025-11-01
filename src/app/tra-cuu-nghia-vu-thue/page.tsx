@@ -124,7 +124,7 @@ export default function TraCuuNghiaVuThuePage() {
           {/* MST Display */}
           <div className="mx-4 mt-6 bg-white rounded-lg p-4 shadow-sm">
             <p className="text-gray-600 text-sm">Mã số thuế</p>
-            <p className="text-[color:var(--color-primary)] font-bold text-lg">{(session.mst ?? "00109202830")}</p>
+            <p className="text-[color:var(--color-primary)] font-bold text-lg">{session.mst || "Chưa có MST"}</p>
           </div>
 
           {/* Search Button */}
