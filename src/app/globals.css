@@ -45,7 +45,10 @@
   --color-text-primary: #000000;
   --color-text-inverse: #FFFFFF;
   --color-border-weak: #D9D9D9;
+
+  /* Fullscreen viewport height handling */
   --app-height: 100vh;
+  --app-height-safe: 100svh;  /* smallest viewport height for fullscreen apps */
 
   /* Backward-compatible aliases */
   --etax-red: var(--color-primary);
@@ -169,6 +172,7 @@ body {
   padding: 0 !important;
   min-height: 100%;
   min-height: 100dvh;
+  min-height: 100svh;
   width: 100%;
   background: #103b90; /* Set default background = phone-frame color để không có nền đen */
   box-sizing: border-box;
@@ -217,37 +221,133 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  padding-top: env(safe-area-inset-top, 0);
   padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
 }
 
-/* Khóa body scroll khi có phone-frame - FIX TRIỆT ĐỂ */
-body:has(.phone-frame),
+/* Override HTML element khi có phone-frame - FULLSCREEN TRIỆT ĐỂ */
 html:has(.phone-frame) {
   overflow: hidden !important;
-  height: var(--app-height, 100vh) !important;
-  min-height: var(--app-height, 100vh) !important;
-  max-height: var(--app-height, 100vh) !important;
+  height: 100svh !important;
+  min-height: 100svh !important;
+  max-height: 100svh !important;
   position: fixed !important;
   width: 100% !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
+  bottom: 0 !important;
+  padding: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin: 0 !important;
   overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
+  overscroll-behavior-x: none !important;
   -webkit-overflow-scrolling: none !important;
-  background: #103b90 !important; /* Fix nền đen - match với phone-frame background */
+  -webkit-overscroll-behavior: none !important;
+  -webkit-overscroll-behavior-y: none !important;
+  -webkit-overscroll-behavior-x: none !important;
+  touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-drag: none !important;
+  background: #103b90 !important;
+}
+
+/* Khóa body scroll khi có phone-frame - FIX TRIỆT ĐỂ VÀ FULLSCREEN */
+body:has(.phone-frame) {
+  overflow: hidden !important;
+  height: 100svh !important;
+  min-height: 100svh !important;
+  max-height: 100svh !important;
+  position: fixed !important;
+  width: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important; /* Fullscreen - không còn khoảng trống */
+  padding: 0 !important; /* Bỏ tất cả padding để fullscreen */
+  padding-top: 0 !important;
+  padding-bottom: 0 !important; /* QUAN TRỌNG: Bỏ safe-area-inset-bottom */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
+  overscroll-behavior-x: none !important;
+  -webkit-overflow-scrolling: none !important;
+  -webkit-overscroll-behavior: none !important;
+  -webkit-overscroll-behavior-y: none !important;
+  -webkit-overscroll-behavior-x: none !important;
+  touch-action: none !important; /* Block tất cả touch actions ở body level */
+  -webkit-touch-callout: none !important;
+  -webkit-user-drag: none !important;
+  background: #103b90 !important; /* Match với phone-frame background - không còn màn hình xanh */
+}
+
+/* Override cả html và body cùng lúc - DOUBLE LAYER để force fullscreen */
+html:has(.phone-frame),
+body:has(.phone-frame) {
+  box-sizing: border-box !important;
+  -webkit-box-sizing: border-box !important;
+  -moz-box-sizing: border-box !important;
 }
 
 /* Cho phép scroll trong container con của phone-frame nhưng body vẫn bị khóa */
 .phone-frame > * {
+  touch-action: none !important; /* Block default, sẽ override bằng JS */
+}
+
+/* Chỉ cho phép pan-y trong scrollable containers */
+.phone-frame [class*="overflow-y-auto"],
+.phone-frame #login-scroll-container {
   touch-action: pan-y !important;
 }
 
-/* Phone Frame Structure - matches project gốc - FIX TRIỆT ĐỂ */
+/* Prevent scroll bounce/overscroll trên iOS - FIX SCROLL ISSUE TRIỆT ĐỂ */
+.phone-frame,
+.phone-frame * {
+  -webkit-overscroll-behavior: none !important;
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
+  overscroll-behavior-x: none !important;
+}
+
+/* Prevent pull-to-refresh và scroll bounce - ĐỔI THÀNH NONE để chặn hoàn toàn */
+.phone-frame > div[class*="overflow-y-auto"],
+.phone-frame [class*="overflow-y-auto"] {
+  -webkit-overscroll-behavior: none !important;
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
+  overscroll-behavior-x: none !important;
+}
+
+/* iOS specific: Disable rubber band effect */
+@supports (-webkit-touch-callout: none) {
+  body {
+    overscroll-behavior-y: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .phone-frame,
+  .phone-frame * {
+    overscroll-behavior-y: none !important;
+    -webkit-overscroll-behavior-y: none !important;
+  }
+}
+
+/* Phone Frame Structure - FULLSCREEN TRIỆT ĐỂ - không bị giới hạn bởi max-height */
 .phone-frame {
   width: 100% !important;
-  height: var(--app-height, 100vh) !important;
-  min-height: var(--app-height, 100vh) !important;
-  max-height: var(--app-height, 100vh) !important;
+  height: 100svh !important; /* Chỉ dùng 100svh - smallest viewport height */
+  min-height: 100svh !important; /* Đảm bảo tối thiểu = viewport */
+  max-height: none !important; /* BỎ max-height để không bị giới hạn - FULLSCREEN */
   background: #f5f5f5;
   background-size: cover;
   background-repeat: no-repeat;
@@ -261,9 +361,24 @@ html:has(.phone-frame) {
   justify-content: flex-start;
   align-items: stretch;
   overflow: hidden !important;
-  position: relative;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important; /* QUAN TRỌNG: Sát đáy màn hình - fullscreen */
   overscroll-behavior: none !important;
   -webkit-overflow-scrolling: none !important;
+}
+
+/* Ensure proper safe area handling for phone frame - CHỈ TOP, KHÔNG CÓ BOTTOM */
+.phone-frame::before {
+  content: '';
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* BỎ ::after để không có padding-bottom - fullscreen */
+.phone-frame::after {
+  display: none; /* Bỏ hoàn toàn để không có padding-bottom gây khoảng trống */
 }
 
 /* Ẩn scrollbar cho content container trong phone-frame */
@@ -294,6 +409,14 @@ html:has(.phone-frame) {
     width: 414px !important;
     max-width: 414px !important;
     background: transparent !important; /* giữ nguyên background image cho desktop preview */
+    position: relative !important; /* Desktop dùng relative để center */
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    height: auto !important;
+    min-height: 600px !important; /* Desktop có min-height cố định */
+    max-height: 90vh !important; /* Desktop có max-height */
   }
   
   .phone-frame .header {
@@ -337,6 +460,15 @@ html:has(.phone-frame) {
     height: 100svh !important;
     height: 100lvh !important;
     height: 100dvh !important;
+  }
+
+  .full-viewport-height {
+    height: 100vh;
+    height: 100dvh;
+    height: 100svh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: 100svh;
   }
 
   .scrollbar-hide {

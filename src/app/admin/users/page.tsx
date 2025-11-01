@@ -255,7 +255,7 @@ export default function AdminUsersPage() {
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Tên</label>
+                  <label className="block text-sm font-medium mb-1">Tên <span className="text-red-500">*</span></label>
                   <input
                     type="text"
                     required
@@ -264,19 +264,35 @@ export default function AdminUsersPage() {
                     className="w-full px-3 py-2 border rounded-lg"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Email</label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
+                {formData.role === "admin" ? (
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Email <span className="text-red-500">*</span></label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg"
+                      placeholder="admin@example.com"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Bắt buộc cho admin</p>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Email (tùy chọn)</label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg"
+                      placeholder="Để trống để tự tạo từ MST đầu tiên"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Để trống → Hệ thống tự tạo: {formData.mstList[0] ? `${formData.mstList[0]}@mst.local` : "MST@mst.local"}</p>
+                  </div>
+                )}
                 {!editingUser && (
                   <div>
-                    <label className="block text-sm font-medium mb-1">Mật khẩu</label>
+                    <label className="block text-sm font-medium mb-1">Mật khẩu <span className="text-red-500">*</span></label>
                     <input
                       type="password"
                       required={!editingUser}
@@ -298,7 +314,9 @@ export default function AdminUsersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Danh sách MST</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Danh sách MST {formData.role === "user" && <span className="text-red-500">*</span>}
+                  </label>
                   <div className="flex gap-2">
                     <input
                       type="text"
@@ -316,6 +334,9 @@ export default function AdminUsersPage() {
                       Thêm
                     </button>
                   </div>
+                  {formData.role === "user" && formData.mstList.length === 0 && (
+                    <p className="text-xs text-red-500 mt-1">⚠️ Cần thêm ít nhất 1 MST cho user</p>
+                  )}
                   <div className="mt-2 flex flex-wrap gap-2">
                     {formData.mstList.map((mst, idx) => (
                       <span

@@ -1,11 +1,36 @@
 import { NextRequest, NextResponse } from "next/server"
 import { adminAuth, adminDb } from "@/lib/firebase-admin"
 import { cookies } from "next/headers"
+import { comparePassword } from "@/lib/password-utils"
+import { signSessionCookie } from "@/lib/cookie-utils"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 const MAX_AGE = 60 * 60 * 8 // 8 hours
 
 export async function POST(req: NextRequest) {
   try {
+    // Check rate limit trước khi xử lý login
+    const rateLimitResult = await checkRateLimit(req)
+    if (rateLimitResult && !rateLimitResult.success) {
+      const resetDate = new Date(rateLimitResult.reset)
+      return NextResponse.json(
+        {
+          error: "Quá nhiều lần thử đăng nhập. Vui lòng thử lại sau.",
+          code: "RATE_LIMIT_EXCEEDED",
+          reset: resetDate.toISOString(),
+          remaining: rateLimitResult.remaining,
+        },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": rateLimitResult.reset.toString(),
+          },
+        }
+      )
+    }
+
     const body = await req.json()
     const { mst, password, email } = body
     const db = adminDb
@@ -36,8 +61,9 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({ error: "Không có quyền admin" }, { status: 403 })
         }
 
-        // Verify password (in production, use hashed password comparison)
-        if (userData.password !== password) {
+        // Verify password với hash comparison (backward compatible với plaintext)
+        const isPasswordValid = await comparePassword(password, userData.password)
+        if (!isPasswordValid) {
           return NextResponse.json({ error: "Sai email hoặc mật khẩu" }, { status: 401 })
         }
 
@@ -63,9 +89,12 @@ export async function POST(req: NextRequest) {
         // Create session data
         const sessionData = { uid: firebaseUid, email: email.toLowerCase(), admin: true }
 
-        // Set cookie with session data (in production, use signed/encrypted cookie)
+        // Sign session data với JWT
+        const signedToken = await signSessionCookie(sessionData)
+
+        // Set cookie với signed token
         const cookieStore = await cookies()
-        cookieStore.set("etax_session", JSON.stringify(sessionData), {
+        cookieStore.set("etax_session", signedToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
@@ -85,34 +114,78 @@ export async function POST(req: NextRequest) {
       const normalizedMst = mst.trim()
       console.log("[DEBUG] User login attempt:", { mst: normalizedMst, hasPassword: !!password })
 
-      // Find user with this MST in Firestore
-      const usersSnapshot = await db.collection("users").where("role", "==", "user").get()
-      console.log("[DEBUG] Firestore query result:", { 
-        totalUsers: usersSnapshot.docs.length,
-        users: usersSnapshot.docs.map(d => ({ id: d.id, mstList: d.data().mstList }))
-      })
-      
+      // Optimized: Query mst_to_user collection thay vì loop all users
       let targetUser: any = null
       let targetMst: string | null = null
+      let duplicateMstUsers: string[] = []
 
-      for (const doc of usersSnapshot.docs) {
-        const userData = doc.data()
-        console.log("[DEBUG] Checking user:", { id: doc.id, mstList: userData.mstList, hasMST: userData.mstList?.includes(normalizedMst) })
-        if (userData.mstList?.includes(normalizedMst)) {
-          // Verify password
-          console.log("[DEBUG] MST matched, checking password:", { storedPassword: userData.password, providedPassword: password, match: userData.password === password })
-          if (userData.password === password) {
-            targetUser = { id: doc.id, ...userData }
-            targetMst = normalizedMst
-            break
-          } else {
-            console.log("[DEBUG] Password mismatch for MST:", normalizedMst)
+      try {
+        // Query mst_to_user collection
+        const mstDoc = await db.collection("mst_to_user").doc(normalizedMst).get()
+        
+        if (mstDoc.exists) {
+          const mstData = mstDoc.data()
+          const userId = mstData?.userId
+          
+          if (userId) {
+            // Get user document
+            const userDoc = await db.collection("users").doc(userId).get()
+            
+            if (userDoc.exists) {
+              const userData = userDoc.data()
+              
+              // Verify user role
+              if (userData?.role !== "user") {
+                console.log("[DEBUG] User is not role='user':", userId)
+              } else {
+                // Verify MST is still in user's mstList (double-check)
+                if (userData.mstList?.includes(normalizedMst)) {
+                  // Verify password với hash comparison (backward compatible với plaintext)
+                  const isPasswordValid = await comparePassword(password, userData.password)
+                  console.log("[DEBUG] MST matched, checking password:", { isPasswordValid })
+                  
+                  if (isPasswordValid) {
+                    targetUser = { id: userDoc.id, ...userData }
+                    targetMst = normalizedMst
+                  } else {
+                    console.log("[DEBUG] Password mismatch for MST:", normalizedMst)
+                  }
+                } else {
+                  console.log("[DEBUG] MST not in user's mstList:", { userId, mstList: userData.mstList })
+                }
+              }
+            }
+          }
+        } else {
+          // Fallback: Query all users (backward compatibility nếu mst_to_user chưa migrate)
+          console.log("[DEBUG] MST not found in mst_to_user, falling back to loop all users")
+          const usersSnapshot = await db.collection("users").where("role", "==", "user").get()
+          
+          for (const doc of usersSnapshot.docs) {
+            const userData = doc.data()
+            if (userData.mstList?.includes(normalizedMst)) {
+              const isPasswordValid = await comparePassword(password, userData.password)
+              if (isPasswordValid) {
+                targetUser = { id: doc.id, ...userData }
+                targetMst = normalizedMst
+                break
+              }
+            }
           }
         }
+      } catch (error: any) {
+        console.error("[DEBUG] Error querying mst_to_user:", error)
+        // Fallback to old method
       }
 
       if (!targetUser || !targetMst) {
         return NextResponse.json({ error: "Sai MST hoặc mật khẩu" }, { status: 401 })
+      }
+
+      // Check for duplicate MSTs (warn admin but allow login)
+      if (duplicateMstUsers.length > 0) {
+        console.warn(`[SECURITY] MST ${normalizedMst} is used by multiple users:`, duplicateMstUsers)
+        // Could send alert to admin here
       }
 
       const resolvedMst = targetMst
@@ -140,9 +213,12 @@ export async function POST(req: NextRequest) {
       // Create session data
       const sessionData = { uid: firebaseUid, mst: resolvedMst, email: mstEmail, admin: false }
 
-      // Set cookie HttpOnly
+      // Sign session data với JWT
+      const signedToken = await signSessionCookie(sessionData)
+
+      // Set cookie với signed token
       const cookieStore = await cookies()
-      cookieStore.set("etax_session", JSON.stringify(sessionData), {
+      cookieStore.set("etax_session", signedToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",

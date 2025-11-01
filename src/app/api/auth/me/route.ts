@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { adminAuth, adminDb } from "@/lib/firebase-admin"
 import { cookies } from "next/headers"
+import { parseSessionCookie } from "@/lib/cookie-utils"
 
 export async function GET(req: NextRequest) {
   try {
@@ -11,19 +12,14 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 })
     }
 
-    // Parse session data (stored as JSON string)
-    let sessionData: any
-    try {
-      sessionData = JSON.parse(sessionCookie)
-    } catch {
+    // Parse và verify session cookie (hỗ trợ cả signed JWT và legacy JSON)
+    const sessionData = await parseSessionCookie(sessionCookie)
+    
+    if (!sessionData || !sessionData.uid) {
       return NextResponse.json({ error: "Session không hợp lệ" }, { status: 401 })
     }
 
     const { uid, email, admin, mst } = sessionData
-
-    if (!uid) {
-      return NextResponse.json({ error: "Session không hợp lệ" }, { status: 401 })
-    }
 
     const db = adminDb
     const auth = adminAuth

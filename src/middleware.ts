@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { parseSessionCookie } from "@/lib/cookie-utils"
 
 const PUBLIC_PATHS = [
   "/login",
@@ -48,19 +49,11 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Parse session data (stored as JSON string, may be URL-encoded from client)
+  // Parse và verify session cookie (hỗ trợ cả signed JWT và legacy JSON)
   try {
-    let sessionData: any
-    try {
-      // Try decoding first (in case set by client with encodeURIComponent)
-      const decodedCookie = decodeURIComponent(sessionCookie)
-      sessionData = JSON.parse(decodedCookie)
-    } catch {
-      // If decode fails, try parsing directly (server-set cookie without encoding)
-      sessionData = JSON.parse(sessionCookie)
-    }
-
-    if (!sessionData.uid) {
+    const sessionData = await parseSessionCookie(sessionCookie)
+    
+    if (!sessionData || !sessionData.uid) {
       throw new Error("Invalid session")
     }
 

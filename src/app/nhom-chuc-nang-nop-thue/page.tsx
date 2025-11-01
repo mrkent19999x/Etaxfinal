@@ -17,7 +17,7 @@ export default function TaxPaymentFunctionsPage() {
   ]
   return (
     <ProtectedView>
-      <div className="h-full bg-gray-800 flex flex-col">
+      <div className="h-full bg-gradient-to-b from-[color:var(--color-primary)] to-[color:var(--color-primary-dark)] flex flex-col">
         <DetailHeader title="Nhóm chức năng nộp thuế" />
 
         {/* Scrollable content */}

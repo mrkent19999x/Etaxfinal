@@ -153,8 +153,8 @@ export default function EtaxMobileHome() {
             </div>
 
             {/* Horizontal Scroll */}
-            <div className="overflow-x-auto -mx-4 px-4 scrollbar-hide">
-              <nav className="flex gap-4 min-w-max" aria-label="Danh sách chức năng thường dùng">
+            <div className="overflow-x-auto -mx-4 px-4 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth' }}>
+              <nav className="flex gap-4 min-w-max flex-nowrap" aria-label="Danh sách chức năng thường dùng">
                 {frequentFeatures.map((feature) => (
                   <Link 
                     key={feature.id} 

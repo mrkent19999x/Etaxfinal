@@ -51,14 +51,34 @@ export async function getContentBlockByKey(key: string): Promise<ContentBlock | 
 
 export async function getFieldDefinitions(screenId: string): Promise<FieldDefinition[]> {
   if (!adminDb) return []
-  const snapshot = await adminDb
-    .collection("fieldDefinitions")
-    .where("screenId", "==", screenId)
-    .orderBy("order", "asc")
-    .get()
-  return snapshot.docs.map((doc) => {
-    const data = doc.data() as FieldDefinition
-    const { id: _, ...rest } = data
-    return { ...rest, id: doc.id }
-  })
+  try {
+    const snapshot = await adminDb
+      .collection("fieldDefinitions")
+      .where("screenId", "==", screenId)
+      .orderBy("order", "asc")
+      .get()
+    return snapshot.docs.map((doc) => {
+      const data = doc.data() as FieldDefinition
+      const { id: _, ...rest } = data
+      return { ...rest, id: doc.id }
+    })
+  } catch (error: any) {
+    // Fallback: Load all và sort trong memory nếu thiếu index
+    if (error?.message?.includes("index") || error?.code === "failed-precondition") {
+      console.warn("[getFieldDefinitions] Index chưa được tạo, dùng fallback sort")
+      const snapshot = await adminDb
+        .collection("fieldDefinitions")
+        .where("screenId", "==", screenId)
+        .get()
+      return snapshot.docs
+        .map((doc) => {
+          const data = doc.data() as FieldDefinition
+          const { id: _, ...rest } = data
+          return { ...rest, id: doc.id }
+        })
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+    }
+    console.error("[getFieldDefinitions]", error)
+    return []
+  }
 }

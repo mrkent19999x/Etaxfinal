@@ -102,7 +102,17 @@ export default function LoginPage() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        backgroundColor: "#103b90"
+        backgroundColor: "#103b90",
+        height: "100svh",
+        minHeight: "100svh",
+        width: "100%",
+        margin: 0,
+        padding: 0,
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
       }}
     >
       {enableViewportDebug && viewportMetrics && (
@@ -121,15 +131,15 @@ export default function LoginPage() {
         </div>
       )}
 
-      {/* Content - scrollable nếu cần nhưng body vẫn bị khóa */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 overflow-y-auto overscroll-contain" style={{ 
-        paddingTop: "env(safe-area-inset-top, 0px)",
-        paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + 5.5rem)`, /* ~88px cho bottom nav + safe-area */
-        WebkitOverflowScrolling: "touch",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-        minHeight: 0 /* Cho phép flex-1 hoạt động đúng */
-      }}>
+      {/* Content - không scroll, giữ nguyên layout logo ở giữa */}
+      <div 
+        className="relative z-10 flex-1 flex flex-col px-6 overflow-hidden"
+        style={{ 
+          paddingTop: "env(safe-area-inset-top, 0px)",
+          paddingBottom: "5.5rem", /* ~88px cho bottom nav */
+          minHeight: 0 /* Cho phép flex-1 hoạt động đúng */
+        }}
+      >
         {/* Logo */}
         <div className="mb-10 flex flex-col items-center">
           <Image
@@ -309,7 +319,9 @@ export default function LoginPage() {
       {/* Bottom Navigation Bar */}
       <nav
         className="absolute bottom-0 inset-x-0 flex items-center justify-around py-3 px-6"
-        style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4px)" }}
+        style={{ 
+          paddingBottom: "4px"
+        }}
         aria-label="Thanh điều hướng dưới cùng"
       >
         <button 

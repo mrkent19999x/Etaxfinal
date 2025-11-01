@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { adminAuth, adminDb } from "@/lib/firebase-admin"
 import { cookies } from "next/headers"
+import { hashPassword } from "@/lib/password-utils"
 
 async function verifyAdmin() {
   const cookieStore = await cookies()
@@ -79,8 +80,89 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (role !== undefined) updateDoc.role = role
     if (mstList !== undefined) updateDoc.mstList = mstList
     if (phone !== undefined) updateDoc.phone = phone || null
+    if (password) {
+      // Hash password trước khi lưu vào Firestore
+      updateDoc.password = await hashPassword(password)
+    }
 
     await db.collection("users").doc(id).update(updateDoc)
+
+    // Sync mst_to_user collection khi mstList thay đổi
+    if (mstList !== undefined && userData.role === "user") {
+      const oldMstList = (userData.mstList || []).map((m: string) => m.trim()).filter(Boolean)
+      const newMstList = (mstList || []).map((m: string) => m.trim()).filter(Boolean)
+      
+      // Find MSTs to remove (trong old nhưng không trong new)
+      const toRemove = oldMstList.filter((m: string) => !newMstList.includes(m))
+      
+      // Find MSTs to add/update (trong new)
+      const toAdd = newMstList.filter((m: string) => !oldMstList.includes(m))
+      const toUpdate = newMstList.filter((m: string) => oldMstList.includes(m))
+      
+      const batch = db.batch()
+      
+      // Delete removed MSTs
+      for (const mst of toRemove) {
+        const mstDocRef = db.collection("mst_to_user").doc(mst)
+        const mstDoc = await mstDocRef.get()
+        
+        // Only delete if this user owns it (to avoid deleting if another user also has this MST)
+        if (mstDoc.exists && mstDoc.data()?.userId === id) {
+          batch.delete(mstDocRef)
+        }
+      }
+      
+      // Add/update new MSTs
+      const duplicateMsts: string[] = []
+      
+      for (const mst of [...toAdd, ...toUpdate]) {
+        const mstDocRef = db.collection("mst_to_user").doc(mst)
+        
+        // Check for duplicates when adding new MSTs
+        if (toAdd.includes(mst)) {
+          const existingDoc = await mstDocRef.get()
+          if (existingDoc.exists) {
+            const existingData = existingDoc.data()
+            if (existingData?.userId !== id) {
+              duplicateMsts.push(`${mst} (already used by user ${existingData?.userId})`)
+              console.warn(`[API /admin/users/[id] PATCH] MST ${mst} already exists for user ${existingData?.userId}`)
+            }
+          }
+        }
+        
+        batch.set(mstDocRef, {
+          userId: id,
+          mst: mst,
+          updatedAt: new Date().toISOString(),
+        }, { merge: true })
+        
+        // Set createdAt only for new documents
+        if (toAdd.includes(mst)) {
+          const existingDoc = await mstDocRef.get()
+          if (!existingDoc.exists) {
+            batch.update(mstDocRef, {
+              createdAt: new Date().toISOString(),
+            })
+          }
+        }
+      }
+      
+      // Return error if duplicates found
+      if (duplicateMsts.length > 0) {
+        return NextResponse.json(
+          {
+            error: `Một hoặc nhiều MST đã được sử dụng bởi users khác`,
+            code: "MST_DUPLICATE",
+            duplicateMsts,
+          },
+          { status: 400 }
+        )
+      }
+      
+      if (toRemove.length > 0 || toAdd.length > 0 || toUpdate.length > 0) {
+        await batch.commit()
+      }
+    }
 
     const updatedDoc = await db.collection("users").doc(id).get()
     return NextResponse.json({

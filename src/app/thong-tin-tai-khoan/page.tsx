@@ -24,11 +24,12 @@ export default function AccountInfoPage() {
       </header>
 
       {/* KHUNG 2: Avatar + 4 nút - CỐ ĐỊNH, LIỀN VỚI TOPBAR */}
-      <div className="bg-gray-800 px-6 pt-16 pb-6 flex-shrink-0 min-h-[50dvh] flex flex-col">
+      <div className="px-6 pt-8 pb-6 flex-shrink-0 min-h-[50dvh] flex flex-col" style={{ backgroundColor: 'var(--etax-dark-blue)' }}>
         {/* Avatar Icon - Ở trên cùng khung 2, cách topbar rõ ràng */}
-        <div className="flex justify-center pt-4">
-          <div className="w-32 h-32 rounded-full bg-white p-2 border-2" style={{ borderColor: 'var(--color-primary)' }}>
-            <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center">
+        <div className="flex justify-center pt-2">
+          <div className="w-32 h-32 rounded-full bg-white p-2 border-2 relative" style={{ borderColor: 'var(--color-primary)' }}>
+            <div className="w-full h-full rounded-full" style={{ backgroundColor: 'var(--etax-dark-blue)' }}></div>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
               </svg>
@@ -61,7 +62,7 @@ export default function AccountInfoPage() {
       </div>
 
       {/* KHUNG 3: Thông tin tài khoản - CHỈ PHẦN NÀY SCROLL */}
-      <div className="flex-1 overflow-y-auto px-4 py-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 bg-white">
         <h2 className="text-xl font-bold mb-4 text-gray-800">Thông tin tài khoản</h2>
         <div className="space-y-4 pb-6">
           <div className="flex justify-between py-2">

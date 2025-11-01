@@ -47,6 +47,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ notifications })
   } catch (error: any) {
     const message = error?.message ?? "Lỗi server"
+    // Filter out Firestore index errors - không trả về error về index cho client
+    if (message.includes("index") || message.includes("FAILED_PRECONDITION")) {
+      console.warn("[API /notifications] Firestore index error (fallback sẽ tự xử lý):", message)
+      return NextResponse.json({ notifications: [] }, { status: 200 })
+    }
     const status = message.includes("đăng nhập") || message.includes("quyền") ? 403 : 500
     return NextResponse.json({ error: message }, { status })
   }

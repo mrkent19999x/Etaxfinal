@@ -76,3 +76,5 @@ echo "1. Test login flows in browser"
 echo "2. Verify field mapping on pages"
 echo "3. Check Firebase status in Vercel logs"
 
+
+

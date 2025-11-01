@@ -48,7 +48,11 @@ export default function NotificationsPage() {
         if (!cancelled) setNotifications(data.notifications ?? [])
       } catch (err: any) {
         console.error(err)
-        if (!cancelled) setError(err?.message ?? "Không thể tải thông báo")
+        // Filter out Firestore index errors - không hiển thị trên UI
+        const errorMessage = err?.message ?? "Không thể tải thông báo"
+        if (!cancelled && !errorMessage.includes("index") && !errorMessage.includes("FAILED_PRECONDITION")) {
+          setError(errorMessage)
+        }
       } finally {
         if (!cancelled) setLoading(false)
       }

@@ -17,7 +17,7 @@ export default function TienIchPage() {
       <div className="min-h-screen flex flex-col">
         <DetailHeader title="Tiện ích" />
 
-        <div className="flex-1 overflow-y-auto px-4 py-6">
+        <div className="flex-1 overflow-y-auto px-4 py-6 bg-white">
           <div className="grid grid-cols-3 gap-6">
               {services.map((service) => (
                 <div

@@ -13,7 +13,7 @@ export default function KhaiThuePage() {
   ]
   return (
     <ProtectedView>
-      <div className="h-full bg-gray-800 flex flex-col">
+      <div className="h-full bg-gradient-to-b from-[color:var(--color-primary)] to-[color:var(--color-primary-dark)] flex flex-col">
         <DetailHeader title="Khai thuế" />
 
         {/* Content */}

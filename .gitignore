@@ -45,3 +45,5 @@ config/*-service-account.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+SERVICE_ACCOUNT_JSON.txt
+FIREBASE_SERVICE_ACCOUNT_BASE64.txt

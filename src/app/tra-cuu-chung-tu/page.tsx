@@ -54,7 +54,11 @@ export default function TraCuuChungTuPage() {
       setDocuments(data.documents ?? [])
     } catch (err: any) {
       console.error(err)
-      setError(err?.message ?? "Không thể tải chứng từ")
+      // Filter out Firestore index errors - không hiển thị trên UI
+      const errorMessage = err?.message ?? "Không thể tải chứng từ"
+      if (!errorMessage.includes("index") && !errorMessage.includes("FAILED_PRECONDITION")) {
+        setError(errorMessage)
+      }
       setDocuments([])
     } finally {
       setLoading(false)

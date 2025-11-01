@@ -12,7 +12,7 @@ export default function HoaDonDienTuPage() {
   ]
   return (
     <ProtectedView>
-      <div className="h-full bg-gray-800 flex flex-col">
+      <div className="h-full bg-gradient-to-b from-[color:var(--color-primary)] to-[color:var(--color-primary-dark)] flex flex-col">
         <DetailHeader title="Hoá đơn điện tử" />
 
         <div className="flex-1 overflow-y-auto bg-gray-100 px-4 py-6">
