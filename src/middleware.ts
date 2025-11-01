@@ -48,9 +48,17 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Parse session data (stored as JSON string)
+  // Parse session data (stored as JSON string, may be URL-encoded from client)
   try {
-    const sessionData = JSON.parse(sessionCookie)
+    let sessionData: any
+    try {
+      // Try decoding first (in case set by client with encodeURIComponent)
+      const decodedCookie = decodeURIComponent(sessionCookie)
+      sessionData = JSON.parse(decodedCookie)
+    } catch {
+      // If decode fails, try parsing directly (server-set cookie without encoding)
+      sessionData = JSON.parse(sessionCookie)
+    }
 
     if (!sessionData.uid) {
       throw new Error("Invalid session")
