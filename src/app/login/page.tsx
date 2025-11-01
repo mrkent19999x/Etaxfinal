@@ -245,7 +245,7 @@ export default function LoginPage() {
       {/* Bottom Navigation Bar */}
       <nav
         className="absolute bottom-0 inset-x-0 flex items-center justify-around py-3 px-6"
-        style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) - 12px, 12px)" }}
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) - 24px, 8px)" }}
         aria-label="Thanh điều hướng dưới cùng"
       >
         <button 

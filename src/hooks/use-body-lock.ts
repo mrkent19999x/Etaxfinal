@@ -31,9 +31,20 @@ export function useBodyLock(lock: boolean = true) {
 
     const applyAppHeight = () => {
       const viewport = window.visualViewport
-      const height = viewport?.height ?? window.innerHeight
-      root.style.setProperty("--app-height", `${height}px`)
-      body.style.setProperty("--app-height", `${height}px`)
+      const viewportHeight = viewport ? viewport.height + viewport.offsetTop : 0
+      const candidates = [
+        viewportHeight,
+        window.innerHeight,
+        root.clientHeight,
+        root.offsetHeight,
+        root.getBoundingClientRect().height,
+      ].filter((value) => typeof value === "number" && value > 0)
+
+      const height = Math.max(...candidates)
+      const roundedHeight = Math.round(height * 100) / 100
+
+      root.style.setProperty("--app-height", `${roundedHeight}px`)
+      body.style.setProperty("--app-height", `${roundedHeight}px`)
     }
 
     const scheduleAppHeight = () => {
