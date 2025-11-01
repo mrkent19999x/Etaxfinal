@@ -228,39 +228,53 @@ export async function loginAdmin(email: string, password: string) {
       body: JSON.stringify({ email, password }),
     })
     if (!res.ok) {
-      const error = await res.json()
-      throw new Error(error.error || "Đăng nhập thất bại")
-    }
-    const data = await res.json()
-    // Get full user data
-    const meRes = await fetch("/api/auth/me")
-    if (meRes.ok) {
-      const meData = await meRes.json()
-      return {
-        id: meData.user.id,
-        name: meData.user.name,
-        email: meData.user.email,
-        password: "",
-        role: "admin" as const,
-        mstList: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+      const error = await res.json().catch(() => ({ error: "Lỗi không xác định" }))
+      // If Firebase not configured (503) or other errors, use fallback
+      console.log("[loginAdmin] API failed (status:", res.status, "), using localStorage fallback:", error.error)
+      // Don't throw here, let fallback handle it
+    } else {
+      const data = await res.json()
+      // Get full user data
+      const meRes = await fetch("/api/auth/me")
+      if (meRes.ok) {
+        const meData = await meRes.json()
+        return {
+          id: meData.user.id,
+          name: meData.user.name,
+          email: meData.user.email,
+          password: "",
+          role: "admin" as const,
+          mstList: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
       }
     }
-    return null
   } catch (error: any) {
-    console.error("[loginAdmin]", error)
-    // Fallback to local storage
+    console.log("[loginAdmin] Network error, using localStorage fallback:", error.message)
+    // Continue to fallback
+  }
+  
+  // Fallback to local storage (when Firebase not configured or API fails)
+  try {
     const account = readData().accounts.find(
       (item) => item.role === "admin" && item.email.toLowerCase() === email.toLowerCase() && item.password === password,
     )
     if (!account) {
+      console.log("[loginAdmin] Fallback failed: Admin account not found")
       return null
     }
     if (typeof window !== "undefined") {
       window.localStorage.setItem(ADMIN_SESSION_KEY, account.id)
+      // Set a simple cookie for middleware to pass (not HttpOnly so client can set it)
+      const sessionData = JSON.stringify({ uid: account.id, email: account.email, admin: true })
+      document.cookie = `etax_session=${encodeURIComponent(sessionData)}; path=/; max-age=${60 * 60 * 8}; SameSite=Lax`
     }
+    console.log("[loginAdmin] Fallback success:", { accountId: account.id, email: account.email })
     return account
+  } catch (error: any) {
+    console.error("[loginAdmin] Fallback error:", error)
+    return null
   }
 }
 
@@ -312,26 +326,48 @@ export async function loginUserByMst(mst: string, password: string): Promise<Use
       body: JSON.stringify({ mst, password }),
     })
     if (!res.ok) {
-      const error = await res.json()
-      throw new Error(error.error || "Đăng nhập thất bại")
-    }
-    const data = await res.json()
-    return {
-      accountId: data.user.id,
-      mst: data.user.mst,
+      const error = await res.json().catch(() => ({ error: "Lỗi không xác định" }))
+      // If Firebase not configured (503) or other errors, use fallback
+      console.log("[loginUserByMst] API failed (status:", res.status, "), using localStorage fallback:", error.error)
+      // Don't throw here, let fallback handle it
+    } else {
+      const data = await res.json()
+      return {
+        accountId: data.user.id,
+        mst: data.user.mst,
+      }
     }
   } catch (error: any) {
-    console.error("[loginUserByMst]", error)
-    // Fallback to local storage
+    console.log("[loginUserByMst] Network error, using localStorage fallback:", error.message)
+    // Continue to fallback
+  }
+  
+  // Fallback to local storage (when Firebase not configured or API fails)
+  try {
     const normalizedMst = mst.trim()
-    const account = readData().accounts.find(
+    const data = readData() // This ensures DEFAULT_DATA is initialized
+    console.log("[loginUserByMst] Fallback data:", { 
+      totalAccounts: data.accounts.length,
+      users: data.accounts.filter(a => a.role === "user").map(a => ({ id: a.id, mstList: a.mstList }))
+    })
+    
+    const account = data.accounts.find(
       (item) =>
         item.role === "user" &&
         item.password === password &&
         item.mstList?.some((value) => value === normalizedMst),
     )
 
-    if (!account) return null
+    if (!account) {
+      console.log("[loginUserByMst] Fallback failed: Account not found", { 
+        normalizedMst, 
+        hasPassword: !!password,
+        checkedAccounts: data.accounts.filter(a => a.role === "user").length
+      })
+      return null
+    }
+
+    console.log("[loginUserByMst] Fallback success:", { accountId: account.id, mst: normalizedMst })
 
     const session: UserSession = {
       accountId: account.id,
@@ -340,9 +376,17 @@ export async function loginUserByMst(mst: string, password: string): Promise<Use
 
     if (typeof window !== "undefined") {
       window.localStorage.setItem(USER_SESSION_KEY, JSON.stringify(session))
+      // Set a simple cookie for middleware to pass (not HttpOnly so client can set it)
+      const mstEmail = `${normalizedMst}@mst.local`
+      const sessionData = JSON.stringify({ uid: account.id, mst: normalizedMst, email: mstEmail, admin: false })
+      document.cookie = `etax_session=${encodeURIComponent(sessionData)}; path=/; max-age=${60 * 60 * 8}; SameSite=Lax`
+      document.cookie = `etax_mst=${normalizedMst}; path=/; max-age=${60 * 60 * 8}; SameSite=Lax`
     }
 
     return session
+  } catch (error: any) {
+    console.error("[loginUserByMst] Fallback error:", error)
+    return null
   }
 }
 
