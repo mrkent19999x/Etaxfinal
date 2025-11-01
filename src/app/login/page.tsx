@@ -45,14 +45,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div 
+    <div
       className="phone-frame relative flex flex-col"
       style={{ 
-        backgroundImage: "url('/assets/cf6c2881-6c21-4612-bdb1-7726d72648cc.webp')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        height: '100dvh'
+        backgroundImage: "url('/assets/bglogin.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        height: "100dvh",
+        backgroundColor: "#103b90"
       }}
     >
       {/* Content */}
