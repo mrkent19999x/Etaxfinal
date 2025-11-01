@@ -32,12 +32,18 @@ export function useBodyLock(lock: boolean = true) {
     const applyAppHeight = () => {
       const viewport = window.visualViewport
       const viewportHeight = viewport ? viewport.height + viewport.offsetTop : 0
+      const screenHeight = typeof window.screen !== "undefined" ? window.screen.height : 0
+      const screenAvailHeight = typeof window.screen !== "undefined" ? window.screen.availHeight : 0
+      const outerHeight = typeof window.outerHeight === "number" ? window.outerHeight : 0
       const candidates = [
         viewportHeight,
         window.innerHeight,
         root.clientHeight,
         root.offsetHeight,
         root.getBoundingClientRect().height,
+        screenHeight,
+        screenAvailHeight,
+        outerHeight,
       ].filter((value) => typeof value === "number" && value > 0)
 
       const baseHeight = Math.max(...candidates)
