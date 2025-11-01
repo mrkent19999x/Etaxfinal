@@ -47,29 +47,31 @@ export default function LoginPage() {
   return (
     <div
       className="phone-frame relative flex flex-col"
-      style={{ 
+      style={{
         backgroundImage: "url('/assets/bglogin.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         height: "100dvh",
+        minHeight: "100svh",
         backgroundColor: "#103b90"
       }}
     >
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col justify-center px-6 pb-24">
         {/* Logo */}
-        <div className="mb-8 flex flex-col items-center">
-          <div className="w-20 h-20 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm p-2">
-            <Image 
-              src="/assets/logo.webp" 
-              alt="eTax Logo" 
-              width={80}
-              height={80}
-              className="object-contain w-full h-full"
-            />
-          </div>
-          <h1 className="text-white text-[26px] font-bold mt-4 tracking-wide">eTax Mobile</h1>
+        <div className="mb-10 flex flex-col items-center">
+          <Image
+            src="/assets/logo.webp"
+            alt="eTax Logo"
+            width={96}
+            height={96}
+            className="object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+            priority
+          />
+          <h1 className="text-white text-[28px] font-bold mt-4 tracking-wide drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]">
+            eTax Mobile
+          </h1>
         </div>
 
         {/* Login Form */}
@@ -79,13 +81,13 @@ export default function LoginPage() {
             <label htmlFor="mst-input" className="sr-only">
               Mã số thuế
             </label>
-            <div className="flex items-center gap-3 min-h-[48px]">
+            <div className="flex items-center gap-3 min-h-[52px]">
               <Image 
                 src="/assets/icon-mst-new.svg" 
                 alt="" 
-                width={18} 
-                height={18}
-                className="opacity-90"
+                width={20}
+                height={20}
+                className="opacity-95"
                 aria-hidden="true"
               />
               <input
@@ -109,13 +111,13 @@ export default function LoginPage() {
             <label htmlFor="password-input" className="sr-only">
               Mật khẩu
             </label>
-            <div className="flex items-center gap-3 min-h-[48px]">
+            <div className="flex items-center gap-3 min-h-[52px]">
               <Image 
                 src="/assets/icon-password-new.svg" 
                 alt="" 
-                width={18} 
-                height={18}
-                className="opacity-90"
+                width={20}
+                height={20}
+                className="opacity-95"
                 aria-hidden="true"
               />
               <input
@@ -132,7 +134,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="w-[38px] h-[38px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm"
+                className="w-[40px] h-[40px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm bg-white/5 hover:bg-white/10 transition-colors"
                 aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                 style={{ touchAction: 'manipulation' }}
               >
@@ -157,11 +159,11 @@ export default function LoginPage() {
           )}
 
           {/* Help Links */}
-          <div className="flex justify-between gap-4 text-sm">
-            <a href="#" className="text-white hover:text-yellow-400 transition-colors">
-              Quên tài khoản?
+          <div className="flex justify-between gap-4 text-sm text-yellow-400 font-semibold drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)]">
+            <a href="#" className="hover:text-yellow-200 transition-colors">
+              Quên tài khoản (Mã số thuế)?
             </a>
-            <a href="#" className="text-white hover:text-yellow-400 transition-colors">
+            <a href="#" className="hover:text-yellow-200 transition-colors">
               Quên mật khẩu?
             </a>
           </div>
@@ -178,12 +180,12 @@ export default function LoginPage() {
               {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
             {/* Fingerprint Icon Overlay */}
-            <div className="absolute right-0 top-0 bottom-0 flex items-center pr-2 pointer-events-none" aria-hidden="true">
+            <div className="absolute right-0 top-0 bottom-0 flex items-center pr-3 pointer-events-none" aria-hidden="true">
               <Image 
-                src="/assets/faceid1.webp"
+                src="/assets/faceid.png"
                 alt=""
-                width={24}
-                height={24}
+                width={28}
+                height={28}
                 className="object-contain"
               />
             </div>
@@ -193,19 +195,21 @@ export default function LoginPage() {
         {/* VNeID Login */}
         <div className="w-full mt-6">
           <button 
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-white border border-white/20 hover:bg-white/10 active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-white/30 focus:ring-offset-2 focus:ring-offset-transparent"
+            className="w-full flex items-center justify-between px-5 py-4 rounded-[18px] bg-white/95 hover:bg-white active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent shadow-[0_6px_18px_rgba(0,0,0,0.25)]"
             style={{ touchAction: 'manipulation' }}
             aria-label="Đăng nhập bằng tài khoản Định danh điện tử VNeID"
           >
-            <Image 
-              src="/assets/vnid.webp" 
-              alt="" 
-              width={36}
-              height={36}
+            <span className="text-[#103b90] font-semibold text-[15px] leading-tight text-left">
+              Đăng nhập bằng tài khoản<br />Định danh điện tử
+            </span>
+            <Image
+              src="/assets/vnid.webp"
+              alt=""
+              width={44}
+              height={44}
               className="object-contain"
               aria-hidden="true"
             />
-            <span className="text-black font-semibold">Đăng nhập bằng tài khoản Định danh điện tử</span>
           </button>
         </div>
 
@@ -227,38 +231,42 @@ export default function LoginPage() {
       </div>
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-[rgba(0,0,0,0.3)] backdrop-blur-sm border-t border-white/10 flex items-center justify-around py-2 px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }} aria-label="Thanh điều hướng dưới cùng">
+      <nav
+        className="absolute bottom-0 inset-x-0 flex items-center justify-around py-3 px-6"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        aria-label="Thanh điều hướng dưới cùng"
+      >
         <button 
-          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm" 
+          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/40 rounded-sm" 
           style={{ touchAction: 'manipulation' }}
           aria-label="QR tem"
         >
-          <Image src="/assets/icon-qr.webp" alt="" width={24} height={24} className="opacity-90" aria-hidden="true" />
-          <span className="text-xs text-white">QR tem</span>
+          <Image src="/assets/icon-qr.webp" alt="" width={30} height={30} className="opacity-95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]" aria-hidden="true" />
+          <span className="text-sm text-white">QR tem</span>
         </button>
         <button 
-          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm" 
+          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/40 rounded-sm" 
           style={{ touchAction: 'manipulation' }}
           aria-label="Tiện ích"
         >
-          <Image src="/assets/tienich.png" alt="" width={24} height={24} className="opacity-90" aria-hidden="true" />
-          <span className="text-xs text-white">Tiện ích</span>
+          <Image src="/assets/tienich.png" alt="" width={30} height={30} className="opacity-95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]" aria-hidden="true" />
+          <span className="text-sm text-white">Tiện ích</span>
         </button>
         <button 
-          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm" 
+          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/40 rounded-sm" 
           style={{ touchAction: 'manipulation' }}
           aria-label="Hỗ trợ"
         >
-          <Image src="/assets/hotro.png" alt="" width={24} height={24} className="opacity-90" aria-hidden="true" />
-          <span className="text-xs text-white">Hỗ trợ</span>
+          <Image src="/assets/hotro.png" alt="" width={30} height={30} className="opacity-95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]" aria-hidden="true" />
+          <span className="text-sm text-white">Hỗ trợ</span>
         </button>
         <button 
-          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm" 
+          className="flex flex-col items-center gap-1 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/40 rounded-sm" 
           style={{ touchAction: 'manipulation' }}
           aria-label="Chia sẻ"
         >
-          <Image src="/assets/chiase.png" alt="" width={24} height={24} className="opacity-90" aria-hidden="true" />
-          <span className="text-xs text-white">Chia sẻ</span>
+          <Image src="/assets/chiase.png" alt="" width={30} height={30} className="opacity-95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]" aria-hidden="true" />
+          <span className="text-sm text-white">Chia sẻ</span>
         </button>
       </nav>
     </div>
