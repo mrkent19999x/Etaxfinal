@@ -40,7 +40,18 @@ export function useBodyLock(lock: boolean = true) {
         root.getBoundingClientRect().height,
       ].filter((value) => typeof value === "number" && value > 0)
 
-      const height = Math.max(...candidates)
+      const baseHeight = Math.max(...candidates)
+      const computedBody = window.getComputedStyle(body)
+      const computedRoot = window.getComputedStyle(root)
+      const safeBottom =
+        parseFloat(computedBody.getPropertyValue("padding-bottom")) ||
+        parseFloat(computedRoot.getPropertyValue("padding-bottom")) ||
+        0
+      const safeTop =
+        parseFloat(computedBody.getPropertyValue("padding-top")) ||
+        parseFloat(computedRoot.getPropertyValue("padding-top")) ||
+        0
+      const height = baseHeight + safeBottom + safeTop
       const roundedHeight = Math.round(height * 100) / 100
 
       root.style.setProperty("--app-height", `${roundedHeight}px`)
